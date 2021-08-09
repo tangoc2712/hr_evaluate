@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+
+<record>
+<!--    <record id="employee_list_view" model="ir.ui.view">-->
+<!--        <field name="name">employee.list.view</field>-->
+<!--        <field name="model">employee.profile</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <tree>-->
+<!--                <field name="name"/>-->
+<!--            </tree>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="employee_form_view" model="ir.ui.view">-->
+<!--        <field name="name">employee.list.view</field>-->
+<!--        <field name="model">employee.profile</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form>-->
+<!--                <group>-->
+<!--                    <group>-->
+<!--                        <field name="name"/>-->
+<!--                    </group>-->
+<!--                </group>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_employee_profile" model="ir.actions.act_window">-->
+<!--        <field name="name">Employee Profile</field>-->
+<!--        <field name="res_model">employee.profile</field>-->
+<!--        <field name="view_mode">tree,form</field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="employee_root_menu" name="employee" web_icon="school,static/description/icon.png"/>-->
+<!--    <menuitem id="employee_sub_menu" parent="employee_root_menu"-->
+<!--              name="Employee Profile"/>-->
+<!--    <menuitem id="employee_profile_menu" name="employee"-->
+<!--              action="action_employee_profile"-->
+<!--              parent="employee_sub_menu"/>-->
+</record>
