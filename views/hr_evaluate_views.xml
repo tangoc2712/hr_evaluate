@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="hr_evaluate_view_tree" model="ir.ui.view">
+            <field name="name">hr.evaluate.tree</field>
+            <field name="model">hr.evaluate</field>
+            <field name="arch" type="xml">
+                <tree string="Evaluate">
+                    <field name="employee_id"/>
+                    <field name="department_id"/>
+                    <field name="job_des"/>
+                    <field name="par_level"/>
+                    <field name="comp_level"/>
+                    <field name="quantity"/>
+                    <field name="des"/>
+                    <field name="manager_des"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_evaluate_view_form" model="ir.ui.view">
+            <field name="name">hr.evaluate.form</field>
+            <field name="model">hr.evaluate</field>
+            <field name="arch" type="xml">
+                <form string="Evaluate">
+                    <header>
+
+                    </header>
+                    <sheet class="o_sheet" style='max-width:1800px; display:flex'>
+                        <div class="title">
+                            <h1 style="text-align:center;">PHIẾU ĐÁNH GIÁ THỬ VIỆC</h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="employee_id"/>
+                                <field name="department_id"/>
+                            </group>
+                            <group>
+                                <field name="job_id"/>
+                                <field name="start_date"/>
+                            </group>
+                        </group>
+                        <group>
+                            <div style="font-weight: bold;">I. ĐÁNH GIÁ KẾT QUẢ THỰC HIỆN CÔNG VIỆC</div>
+                            <notebook>
+                                <tree>
+                                    <field name="job_des"/>
+                                    <field name="par_level"/>
+                                    <field name="comp_level"/>
+                                    <field name="quantity"/>
+                                    <field name="des"/>
+                                    <field name="manager_des"/>
+                                </tree>
+                            </notebook>
+                        </group>
+                        <group>
+                            <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG LÀM VIỆC</div>
+                        </group>
+                        <group>
+                            <div style="font-weight: bold;">A. Ý kiến, kiến nghị</div>
+                        </group>
+                        <group>
+                            <div style="font-weight: bold;">B. Ý kiến nhận xét</div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+
+        <record id="action_hr_evaluate" model="ir.actions.act_window">
+            <field name="name">Evaluate</field>
+            <field name="res_model">hr.evaluate</field>
+            <field name="view_mode">tree,form,activity,kanban</field>
+            <field name="domain">[('employee_id', '!=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new evaluate
+                </p>
+            </field>
+        </record>
+
+        <record id="action_hr_evaluate_confirm" model="ir.actions.act_window">
+            <field name="name">Confirm</field>
+            <field name="res_model">hr.evaluate</field>
+            <field name="view_mode">tree,form,activity,kanban</field>
+            <field name="domain">[('employee_id', '!=', False)]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new evaluate
+                </p>
+            </field>
+        </record>
+        <menuitem
+                id="menu_hr_evaluate"
+                name="Evaluate"
+                parent="menu_hr_root"
+                groups="group_hr_manager,group_hr_user,base.group_user"
+                sequence="3"/>
+        <menuitem
+                id="menu_hr_evaluate_user"
+                name="Evaluate"
+                parent="menu_hr_evaluate"
+                action="action_hr_evaluate"
+                groups="group_hr_manager,group_hr_user,base.group_user"
+                sequence="4"/>
+        <menuitem
+                id="menu_hr_evaluate_confirm"
+                name="Confirm"
+                parent="menu_hr_evaluate"
+                action="action_hr_evaluate_confirm"
+                groups="group_hr_manager,group_hr_user,base.group_user"
+                sequence="4"/>
+    </data>
+</odoo>
