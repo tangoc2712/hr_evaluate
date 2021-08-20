@@ -1,23 +1,17 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_employee_category_user,hr.employee.category.user,model_hr_employee_category,group_hr_user,1,1,1,1
-access_hr_employee_category_emp,hr.employee.category.emp,model_hr_employee_category,base.group_user,1,0,0,0
-access_hr_employee_user,hr.employee user,model_hr_employee,group_hr_user,1,1,1,1
-access_hr_employee_system_user,hr.employee system user,model_hr_employee,base.group_user,0,0,0,0
-access_hr_employee_public_user,hr.employee_public,model_hr_employee_public,base.group_user,1,0,0,0
-access_hr_employee_resource_user,resource.resource.user,resource.model_resource_resource,group_hr_user,1,1,1,1
-access_hr_department_user,hr.department.user,model_hr_department,group_hr_user,1,1,1,1
-access_hr_department_employee,hr.department.employee,model_hr_department,base.group_user,1,0,0,0
-access_hr_job_user,hr.job user,model_hr_job,group_hr_user,1,1,1,1
-access_hr_plan_activity_type_employee,access_hr_plan_activity_type,model_hr_plan_activity_type,base.group_user,1,0,0,0
-access_hr_plan_employee,access_hr_plan_employee,model_hr_plan,base.group_user,1,0,0,0
-access_hr_plan_activity_type_hr_user,access_hr_plan_activity_type,model_hr_plan_activity_type,group_hr_user,1,1,1,1
-access_hr_plan_hr_user,access_hr_plan_hr_user,model_hr_plan,group_hr_user,1,1,1,1
-access_hr_plan_wizard,access.hr.plan.wizard,model_hr_plan_wizard,hr.group_hr_manager,1,1,1,0
-access_hr_departure_wizard,access.hr.departure.wizard,model_hr_departure_wizard,hr.group_hr_user,1,1,1,0
-access_hr_evaluate,hr.evaluate,model_hr_evaluate,group_hr_user,1,1,1,1
+access_hr_evaluate,access.hr.evaluate,model_hr_evaluate,base.group_user,1,1,1,1
+access_hr_evaluate_form,access.hr.evaluate.form,model_hr_evaluate_form,base.group_user,1,1,1,1
 
+access_hr_evaluate_hr,access.hr.evaluate_em,model_hr_evaluate,hr_evaluate.group_hr_evaluate_user,1,0,0,0
+access_hr_evaluate_pm,access.hr.evaluate_pm,model_hr_evaluate,hr_evaluate.group_pm_user,1,0,1,1
+access_hr_evaluate_dl,access.hr.evaluate_dl,model_hr_evaluate,hr_evaluate.group_dl_user,1,1,1,1
 
-access_hr_evaluate_em,access.hr.evaluate_em,model_hr_evaluate,hr.group_hr_evaluate_user,1,0,0,0
-access_hr_evaluate_pm,access.hr.evaluate_pm,model_hr_evaluate,hr.group_pm_user,1,0,1,1
-access_hr_evaluate_dl,access.hr.evaluate_dl,model_hr_evaluate,hr.group_dl_user,1,1,1,1
+access_hr_evaluate_form_hr,access.hr.evaluate_form_em,model_hr_evaluate_form,hr_evaluate.group_hr_evaluate_user,1,0,0,0
+access_hr_evaluate_form_pm,access.hr.evaluate_form_pm,model_hr_evaluate_form,hr_evaluate.group_pm_user,1,0,1,1
+access_hr_evaluate_form_dl,access.hr.evaluate_form_dl,model_hr_evaluate_form,hr_evaluate.group_dl_user,1,1,1,1
+
+access_hr_evaluate_form2_hr,access.hr.evaluate_form2_em,model_hr_evaluate_form2,hr_evaluate.group_hr_evaluate_user,1,0,0,0
+access_hr_evaluate_form2_pm,access.hr.evaluate_form2_pm,model_hr_evaluate_form2,hr_evaluate.group_pm_user,1,0,1,1
+access_hr_evaluate_form2_dl,access.hr.evaluate_form2_dl,model_hr_evaluate_form2,hr_evaluate.group_dl_user,1,1,1,1
+
 

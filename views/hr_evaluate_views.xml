@@ -31,6 +31,8 @@
             <field name="arch" type="xml">
                 <form string="Evaluate">
                     <header>
+                        <button id="button_confirm" name="user_confirm" string="Confirm" type="object"
+                                class="btn-primary"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"
                                options="{'clickable': 1}"/>
                     </header>
@@ -50,27 +52,22 @@
                             </group>
                         </group>
                         <group>
-                            <div style="font-weight: bold;">I. ĐÁNH GIÁ KẾT QUẢ THỰC HIỆN CÔNG VIỆC</div>
-
-                            <tree>
-                                <field name="job_des"/>
-                                <field name="par_level"/>
-                                <field name="comp_level"/>
-                                <field name="quantity"/>
-                                <field name="des"/>
-                                <field name="manager_des"/>
-                            </tree>
-
+                            <div style="font-weight: bold;">I. ĐÁNH GIÁ KẾT QUẢ THỰC HIỆN CÔNG VIỆC
+                            </div>
                         </group>
                         <group>
-                            <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG LÀM VIỆC</div>
+                            <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG
+                                LÀM VIỆC
+                            </div>
                         </group>
                         <group>
                             <div style="font-weight: bold;">A. Ý kiến, kiến nghị</div>
                         </group>
+                        <field name="petition"/>
                         <group>
                             <div style="font-weight: bold;">B. Ý kiến nhận xét</div>
                         </group>
+                        <field name="remark"/>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
@@ -82,6 +79,7 @@
         </record>
 
 
+        # action
         <record id="action_hr_evaluate" model="ir.actions.act_window">
             <field name="name">Evaluate</field>
             <field name="res_model">hr.evaluate</field>
@@ -95,49 +93,24 @@
             </field>
         </record>
 
-        <record id="action_hr_evaluate_confirm" model="ir.actions.act_window">
-            <field name="name">Confirm</field>
-            <field name="res_model">hr.evaluate</field>
-            <field name="view_mode">tree,form,activity,kanban</field>
-            <field name="domain">[('employee_id', '!=', False)]</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create a new evaluate
-                </p>
-            </field>
-        </record>
-
+        #menu
         <menuitem
                 id="menu_hr_evaluate"
                 name="Evaluate"
-                parent="menu_hr_root"
-                groups="group_hr_manager,group_hr_user,base.group_user"
+                parent="hr.menu_hr_root"
+                groups="group_hr_evaluate_user,group_pm_user,group_dl_user"
                 sequence="3"/>
         <menuitem
                 id="menu_hr_evaluate_user"
                 name="Evaluate"
                 parent="menu_hr_evaluate"
                 action="action_hr_evaluate"
-                groups="group_hr_manager,group_hr_user,base.group_user"
-                sequence="4"/>
-        <menuitem
-                id="menu_hr_evaluate_confirm"
-                name="Confirm"
-                parent="menu_hr_evaluate"
-                action="action_hr_evaluate_confirm"
-                groups="group_hr_manager,group_hr_user,base.group_user"
+                groups="group_hr_evaluate_user,group_pm_user,group_dl_user"
                 sequence="4"/>
 
 
-<!--        <record id="my_model_sequence" model="ir.sequence">-->
-<!--            <field name="name">My Model Sequence</field>-->
-<!--            <field name="code">hr.evaluate</field>-->
-<!--            <field name="active">TRUE</field>-->
-<!--            <field name="prefix">MYMODEL-</field>-->
-<!--            <field name="padding">3</field>-->
-<!--            <field name="number_next">1</field>-->
-<!--            <field eval="10" name="number_increment"/>-->
-<!--        </record>-->
+
+        # ==> auto generate contract name
         <record id="unique_sequence_id" model="ir.sequence">
             <field name="name">Sequence Name</field>
             <field name="code">sequence.code</field>
@@ -145,7 +118,7 @@
             <field name="prefix">OC-Corp-</field>
             <field name="padding">4</field>
             <field name="number_next">1</field>
-            <field name="number_increment">108</field>
+            <field name="number_increment">17</field>
         </record>
     </data>
 </odoo>

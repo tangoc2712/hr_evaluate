@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+        <record id="hr_evaluate_form_view_tree1" model="ir.ui.view">
+            <field name="name">hr.evaluate.form.tree1</field>
+            <field name="model">hr.evaluate.form</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="job_des"/>
+                    <field name="par_level"/>
+                    <field name="comp_level"/>
+                    <field name="quantity"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_evaluate_form_view_form" model="ir.ui.view">
+            <field name="name">hr.evaluate.form.tree.form</field>
+            <field name="model">hr.evaluate.form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="job_des"/>
+                            <field name="par_level"/>
+                            <field name="comp_level"/>
+                            <field name="quantity"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="hr_evaluate_form_view_tree2" model="ir.ui.view">
+            <field name="name">hr.evaluate.form.tree2</field>
+            <field name="model">hr.evaluate.form2</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="criteria"/>
+                    <field name="weight_num"/>
+                    <field name="self_evaluate"/>
+                    <field name="dl_evaluate"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_evaluate_form_view_form2" model="ir.ui.view">
+            <field name="name">hr.evaluate.form.tree.form2</field>
+            <field name="model">hr.evaluate.form2</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="criteria"/>
+                            <field name="weight_num"/>
+                            <field name="self_evaluate"/>
+                            <field name="dl_evaluate"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="evaluate_extend_form">
+            <field name="name">Evaluate extend form</field>
+            <field name="model">hr.evaluate</field>
+            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group[2]" position="after">
+                    <field name="form_list"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="evaluate_extend_form2">
+            <field name="name">Evaluate extend form2</field>
+            <field name="model">hr.evaluate</field>
+            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group[3]" position="after">
+                    <field name="form_list2"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="action_hr_evaluate_confirm" model="ir.actions.act_window">
+            <field name="name">Confirm</field>
+            <field name="res_model">hr.evaluate.form</field>
+            <field name="view_mode">tree,form,activity,kanban</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new evaluate
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_hr_evaluate_confirm"
+                name="Confirm"
+                parent="menu_hr_evaluate"
+                action="action_hr_evaluate_confirm"
+                groups="group_hr_evaluate_user,group_pm_user,group_dl_user"
+                sequence="4"/>
+    </data>
+</odoo>
