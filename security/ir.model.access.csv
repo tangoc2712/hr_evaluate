@@ -1,17 +1,11 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_evaluate,access.hr.evaluate,model_hr_evaluate,base.group_user,1,1,1,1
-access_hr_evaluate_form,access.hr.evaluate.form,model_hr_evaluate_form,base.group_user,1,1,1,1
+access_hr_evaluate_user,access.hr.evaluate_user,model_hr_evaluate,base.group_user,1,1,0,0
+access_hr_evaluate_sys,access.hr.evaluate_sys,model_hr_evaluate,base.group_system,1,1,1,1
+access_hr_evaluate_hrm,access.hr.evaluate_hrm,model_hr_evaluate,hr.group_hr_manager,1,1,0,1
 
-access_hr_evaluate_hr,access.hr.evaluate_em,model_hr_evaluate,hr_evaluate.group_hr_evaluate_user,1,0,0,0
-access_hr_evaluate_pm,access.hr.evaluate_pm,model_hr_evaluate,hr_evaluate.group_pm_user,1,0,1,1
-access_hr_evaluate_dl,access.hr.evaluate_dl,model_hr_evaluate,hr_evaluate.group_dl_user,1,1,1,1
 
-access_hr_evaluate_form_hr,access.hr.evaluate_form_em,model_hr_evaluate_form,hr_evaluate.group_hr_evaluate_user,1,0,0,0
-access_hr_evaluate_form_pm,access.hr.evaluate_form_pm,model_hr_evaluate_form,hr_evaluate.group_pm_user,1,0,1,1
-access_hr_evaluate_form_dl,access.hr.evaluate_form_dl,model_hr_evaluate_form,hr_evaluate.group_dl_user,1,1,1,1
+access_hr_evaluate_form,access.hr.evaluate.form,model_hr_evaluate_form,base.group_user,1,1,0,0
+access_hr_evaluate_form2,access.hr.evaluate.form2,model_hr_evaluate_form2,base.group_user,1,1,0,0
 
-access_hr_evaluate_form2_hr,access.hr.evaluate_form2_em,model_hr_evaluate_form2,hr_evaluate.group_hr_evaluate_user,1,0,0,0
-access_hr_evaluate_form2_pm,access.hr.evaluate_form2_pm,model_hr_evaluate_form2,hr_evaluate.group_pm_user,1,0,1,1
-access_hr_evaluate_form2_dl,access.hr.evaluate_form2_dl,model_hr_evaluate_form2,hr_evaluate.group_dl_user,1,1,1,1
 
 

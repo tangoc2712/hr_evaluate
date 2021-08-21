@@ -6,15 +6,16 @@ class HrEvaluate(models.Model):
     _description = 'Employee Evaluate'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    name = fields.Char('No.', default='/')
-    # form_id = fields.Many2many('hr.evaluate.form')
-    employee_id = fields.Many2one('hr.employee', string='Employee', tracking=True)
-    user_id = fields.Many2one('res.users', string='Account', store=True)
+    trail_contract_id = fields.Many2one('hr.contract', string="Hợp đồng thử việc")
+
+    employee_id = fields.Many2one('hr.employee', string='Người được đánh giá', tracking=True)
+    # user_id = fields.Many2one('res.users', string='Account', store=True, states={'draft': [('readonly', False)]},
+    #                           default=lambda self: self.env.user)
     department_id = fields.Many2one('hr.department', compute='_compute_employee_evaluate', store=True, readonly=True,
                                     string="Department")
     job_id = fields.Many2one('hr.job', compute='_compute_employee_evaluate', store=True, readonly=True,
                              string='Job Position')
-
+    company_id = fields.Many2one('res.company', required=True)
     petition = fields.Html()
     remark = fields.Html()
     start_date = fields.Date(string='Start Date', default=fields.Date.today(), readonly=True)
@@ -24,20 +25,12 @@ class HrEvaluate(models.Model):
         ('pm', 'PM Review'),
         ('dl', 'DL Review'),
         ('approve', 'Approved')
-    ], default='draft')
-
-    # on create method ==> auto generate contract name
-    @api.model
-    def create(self, vals):
-        obj = super(HrEvaluate, self).create(vals)
-        if obj.name == '/':
-            number = self.env['ir.sequence'].get('sequence.code') or '/'
-            obj.write({'name': number})
-        return obj
+    ], default='draft', tracking=True)
 
     @api.depends('employee_id')
     def _compute_employee_evaluate(self):
         for evaluate in self.filtered('employee_id'):
+            evaluate.company_id = evaluate.employee_id.company_id
             evaluate.job_id = evaluate.employee_id.job_id
             evaluate.department_id = evaluate.employee_id.department_id
 
