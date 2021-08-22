@@ -56,35 +56,59 @@
             <field eval="1" name="perm_unlink"></field>
             <field eval="1" name="perm_create"></field>
         </record>
-        <!--        <record id="hr.dl_rule" model="ir.rule">-->
-        <!--            <field name="name">HR DL</field>-->
-        <!--            <field name="model_id" ref="model_hr_evaluate"/>-->
-        <!--            <field name="domain_force">[(1,'=',1)]</field>-->
-        <!--            <field name="groups" eval="[(4, ref('group_dl_user'))]"/>-->
-        <!--        </record>-->
-        <!--        <record id="hr.pm_rule" model="ir.rule">-->
-        <!--            <field name="name">HR PM</field>-->
-        <!--            <field name="model_id" ref="model_hr_evaluate"/>-->
-        <!--            <field name="domain_force">[(1,'=',1)]</field>-->
-        <!--            <field name="groups" eval="[(4, ref('group_pm_user'))]"/>-->
-        <!--        </record>-->
-        <!--        <record id="hr.user_rule_form" model="ir.rule">-->
-        <!--            <field name="name">HR User Form</field>-->
-        <!--            <field name="model_id" ref="model_hr_evaluate_form"/>-->
-        <!--            <field name="domain_force">[(1,'=',1)]</field>-->
-        <!--            <field name="groups" eval="[(4, ref('group_hr_evaluate_user'))]"/>-->
-        <!--        </record>-->
-        <!--        <record id="hr.dl_rule_form" model="ir.rule">-->
-        <!--            <field name="name">HR DL Form</field>-->
-        <!--            <field name="model_id" ref="model_hr_evaluate_form"/>-->
-        <!--            <field name="domain_force">[(1,'=',1)]</field>-->
-        <!--            <field name="groups" eval="[(4, ref('group_dl_user'))]"/>-->
-        <!--        </record>-->
-        <!--        <record id="hr.pm_rule_form" model="ir.rule">-->
-        <!--            <field name="name">HR PM Form</field>-->
-        <!--            <field name="model_id" ref="model_hr_evaluate_form"/>-->
-        <!--            <field name="domain_force">[(1,'=',1)]</field>-->
-        <!--            <field name="groups" eval="[(4, ref('group_pm_user'))]"/>-->
-        <!--        </record>-->
+
+        <record id="evaluate_pm_read_rule" model="ir.rule">
+            <field name="name">OC: PM read Rule</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="domain_force">[('pm_assign.user_id','=',user.id), ('state', '!=', 'draft')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_pm'))]"/>
+            <field eval="1" name="perm_read"></field>
+            <field eval="0" name="perm_write"></field>
+            <field eval="0" name="perm_unlink"></field>
+            <field eval="0" name="perm_create"></field>
+        </record>
+
+        <record id="evaluate_pm_write_rule" model="ir.rule">
+            <field name="name">OC: PM write Rule</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="domain_force">[('pm_assign.user_id','=',user.id), ('state', '!=', 'pm')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_pm'))]"/>
+            <field eval="0" name="perm_read"></field>
+            <field eval="1" name="perm_write"></field>
+            <field eval="0" name="perm_unlink"></field>
+            <field eval="0" name="perm_create"></field>
+        </record>
+
+        <record id="evaluate_dl_read_rule" model="ir.rule">
+            <field name="name">OC: DL read Rule</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="domain_force">[('dl_assign.user_id','=',user.id), ('state', '!=', 'draft')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_dl'))]"/>
+            <field eval="1" name="perm_read"></field>
+            <field eval="0" name="perm_write"></field>
+            <field eval="0" name="perm_unlink"></field>
+            <field eval="0" name="perm_create"></field>
+        </record>
+
+        <record id="evaluate_dl_write_rule" model="ir.rule">
+            <field name="name">OC: DL write Rule</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="domain_force">[('state', '!=', 'dl')]</field>
+            <field name="groups" eval="[(4, ref('group_hr_dl'))]"/>
+            <field eval="0" name="perm_read"></field>
+            <field eval="1" name="perm_write"></field>
+            <field eval="0" name="perm_unlink"></field>
+            <field eval="0" name="perm_create"></field>
+        </record>
+<!--        <record id="evaluate_hrm_rule" model="ir.rule">-->
+<!--            <field name="name">OC: HRM Rule</field>-->
+<!--            <field name="model_id" ref="model_hr_evaluate"/>-->
+<!--            <field name="domain_force">[(1,'=',1)]</field>-->
+<!--            <field name="groups" eval="[(4, ref('group_hr_manager'))]"/>-->
+<!--            <field eval="1" name="perm_read"></field>-->
+<!--            <field eval="1" name="perm_write"></field>-->
+<!--            <field eval="1" name="perm_unlink"></field>-->
+<!--            <field eval="0" name="perm_create"></field>-->
+<!--        </record>-->
     </data>
 </odoo>
