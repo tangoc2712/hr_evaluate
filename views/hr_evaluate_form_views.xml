@@ -61,46 +61,46 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="evaluate_extend_form">
-            <field name="name">Evaluate extend form</field>
-            <field name="model">hr.evaluate</field>
-            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form/sheet/group[2]" position="after">
-                    <field name="form_list"/>
-                </xpath>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="evaluate_extend_form">-->
+<!--            <field name="name">Evaluate extend form</field>-->
+<!--            <field name="model">hr.evaluate</field>-->
+<!--            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//form/sheet/group[2]" position="after">-->
+<!--                    <field name="form_list"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
-        <record model="ir.ui.view" id="evaluate_extend_form2">
-            <field name="name">Evaluate extend form2</field>
-            <field name="model">hr.evaluate</field>
-            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//form/sheet/group[3]" position="after">
-                    <field name="form_list2"/>
-                </xpath>
-            </field>
-        </record>
+<!--        <record model="ir.ui.view" id="evaluate_extend_form2">-->
+<!--            <field name="name">Evaluate extend form2</field>-->
+<!--            <field name="model">hr.evaluate</field>-->
+<!--            <field name="inherit_id" ref="hr_evaluate.hr_evaluate_view_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//form/sheet/group[3]" position="after">-->
+<!--                    <field name="form_list2"/>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
 
 
-        <record id="action_hr_evaluate_confirm" model="ir.actions.act_window">
-            <field name="name">Confirm</field>
-            <field name="res_model">hr.evaluate.form</field>
-            <field name="view_mode">tree,form,activity,kanban</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Create a new evaluate
-                </p>
-            </field>
-        </record>
+<!--        <record id="action_hr_evaluate_confirm" model="ir.actions.act_window">-->
+<!--            <field name="name">Confirm</field>-->
+<!--            <field name="res_model">hr.evaluate.form</field>-->
+<!--            <field name="view_mode">tree,form,activity,kanban</field>-->
+<!--            <field name="help" type="html">-->
+<!--                <p class="o_view_nocontent_smiling_face">-->
+<!--                    Create a new evaluate-->
+<!--                </p>-->
+<!--            </field>-->
+<!--        </record>-->
 
-        <menuitem
-                id="menu_hr_evaluate_confirm"
-                name="Confirm"
-                parent="menu_hr_evaluate"
-                action="action_hr_evaluate_confirm"
-                groups="base.group_user"
-                sequence="4"/>
+<!--        <menuitem-->
+<!--                id="menu_hr_evaluate_confirm"-->
+<!--                name="Confirm"-->
+<!--                parent="menu_hr_evaluate"-->
+<!--                action="action_hr_evaluate_confirm"-->
+<!--                groups="base.group_user"-->
+<!--                sequence="4"/>-->
     </data>
 </odoo>

@@ -31,6 +31,9 @@ class HrEvaluate(models.Model):
         ('approve', 'Approved')
     ], default='draft', tracking=True)
 
+    form_evaluate_ids = fields.One2many('hr.evaluate.form', 'employee_id', string='Performance Evaluate')
+    form2_evaluate_ids = fields.One2many('hr.evaluate.form2', 'employee_id2', string='Discipline Evaluate')
+
     @api.depends('employee_id')
     def _compute_employee_evaluate(self):
         for evaluate in self.filtered('employee_id'):

@@ -6,7 +6,7 @@
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
                 <tree string="Evaluate">
-<!--                    <field name="contract_id"/>-->
+                    <!--                    <field name="contract_id"/>-->
                     <field name="employee_id"/>
                     <field name="department_id"/>
                     <field name="job_id"/>
@@ -30,7 +30,6 @@
             <field name="arch" type="xml">
                 <form string="Evaluate">
                     <header>
-
                         <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"
                                options="{'clickable': 1}"/>
                     </header>
@@ -42,22 +41,64 @@
                             <group>
                                 <field name="employee_id"/>
                                 <field name="job_id"/>
-<!--                                <field name="end_date"/>-->
+                                <!--                                <field name="end_date"/>-->
                             </group>
                             <group>
                                 <field name="dl_assign"/>
                                 <field name="dl_assign_job_id"/>
+                                <field name="pm_assign" readonly="1" attrs="{'invisible': [('pm_assign','=',False)]}"/>
                             </group>
                         </group>
                         <group>
-                            <div style="font-weight: bold;">I. ĐÁNH GIÁ KẾT QUẢ THỰC HIỆN CÔNG VIỆC
-                            </div>
+                            <div style="font-weight: bold;">I. ĐÁNH GIÁ VỀ KẾT QUẢ THỰC HIỆN CÔNG VIỆC</div>
                         </group>
+                        <field name="form_evaluate_ids" nolabel="1" force_save="1"
+                               attrs="{'readonly': [('state', '=', 'approve')]}">
+                            <tree editable="bottom">
+                                <field name="manager_edit" invisible="1"/>
+                                <field name="job_des"/>
+                                <field name="par_level"/>
+                                <field name="comp_level"/>
+                                <field name="quantity"/>
+                                <field name="des"/>
+                                <field name="manager_eval" attrs="{'readonly': [('manager_edit','=',False)]}"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="job_des"/>
+                                    <field name="par_level"/>
+                                    <field name="comp_level"/>
+                                    <field name="quantity"/>
+                                    <field name="des"/>
+                                    <field name="manager_eval"/>
+                                </group>
+                            </form>
+                        </field>
                         <group>
-                            <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG
-                                LÀM VIỆC
-                            </div>
+                            <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG LÀM VIỆC</div>
                         </group>
+                        <field name="form2_evaluate_ids" nolabel="1" force_save="1"
+                               attrs="{'readonly': [('state', '=', 'approve')]}">
+                            <tree create="false" editable="bottom" delete="0">
+                                <field name="self_evaluate_edit" invisible="1"/>
+                                <field name="dl_evaluate_edit" invisible="1"/>
+                                <field name="criteria" force_save="1"/>
+                                <field name="weight_num" force_save="1"/>
+                                <field name="self_evaluate" attrs="{'readonly': [('self_evaluate_edit','=',False)]}"/>
+                                <field name="dl_evaluate"
+                                       attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
+                                <field name="des"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="criteria" force_save="1" text="Total"/>
+                                    <field name="weight_num" force_save="1"/>
+                                    <field name="self_evaluate" sum="Total"/>
+                                    <field name="dl_evaluate" text="Total"/>
+                                    <field name="des"/>
+                                </group>
+                            </form>
+                        </field>
                         <group>
                             <div style="font-weight: bold;">A. Ý kiến, kiến nghị</div>
                         </group>
