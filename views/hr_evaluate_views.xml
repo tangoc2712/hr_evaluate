@@ -6,10 +6,12 @@
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
                 <tree string="Evaluate">
-                    <!--                    <field name="contract_id"/>-->
                     <field name="employee_id"/>
-                    <field name="department_id"/>
+                    <field name="account"/>
                     <field name="job_id"/>
+                    <field name="department_id"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
                     <field name="state"/>
                 </tree>
             </field>
@@ -29,9 +31,24 @@
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
                 <form string="Evaluate">
+                    <field name="employee_can_submit" invisible="1"/>
+                    <field name="pm_can_submit" invisible="1"/>
+                    <field name="dl_can_submit" invisible="1"/>
+                    <field name="dl_can_assign" invisible="1"/>
                     <header>
-                        <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"
-                               options="{'clickable': 1}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"/>
+                        <button name="action_employee_submit" groups="hr.group_hr_user"
+                                attrs="{'invisible': [('employee_can_submit','=', False)]}" string="Submit"
+                                type="object" class="oe_highlight"/>
+                        <button name="action_pm_submit" groups="hr_evaluate.group_hr_pm"
+                                attrs="{'invisible': [('pm_can_submit', '=', False)]}"
+                                string="Submit" type="object" class="oe_highlight"/>
+                        <button name="action_dl_submit" groups="hr_evaluate.group_hr_dl"
+                                attrs="{'invisible': [('dl_can_submit', '=', False)]}"
+                                string="Submit" type="object" class="oe_highlight"/>
+                        <button name="action_dl_assign" groups="hr_evaluate.group_hr_dl"
+                                attrs="{'invisible': [('dl_can_assign', '=', False)]}" string="Assign To PM/Team Lead"
+                                type="object" class="oe_highlight"/>
                     </header>
                     <sheet>
                         <div class="title">
@@ -41,10 +58,12 @@
                             <group>
                                 <field name="employee_id"/>
                                 <field name="job_id"/>
-                                <!--                                <field name="end_date"/>-->
+                                <field name="department_id"/>
+                                <field name="start_date" force_save="1"/>
+                                <field name="end_date" force_save="1" invisible="1"/>
                             </group>
                             <group>
-                                <field name="dl_assign"/>
+                                <field name="dl_assign" string="DL đánh giá"/>
                                 <field name="dl_assign_job_id"/>
                                 <field name="pm_assign" readonly="1" attrs="{'invisible': [('pm_assign','=',False)]}"/>
                             </group>
@@ -116,19 +135,19 @@
                 </form>
             </field>
         </record>
-        <record id="inherited_evaluate_submit" model="ir.ui.view">
-            <field name="name">inherited.evaluate_submit</field>
-            <field name="model">hr.evaluate</field>
-            <field name="inherit_id" ref="hr_evaluate_view_form"/>
-            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>
-            <field name="arch" type="xml">
-                <header>
-                    <button id="button_confirm_user" name="user_confirm" string="Confirm" type="object"
-                            class="btn-primary"/>
-                    <button id="button_cancel" name="cancel_user_confirm" string="Cancel" type="object"/>
-                </header>
-            </field>
-        </record>
+        <!--        <record id="inherited_evaluate_submit" model="ir.ui.view">-->
+        <!--            <field name="name">inherited.evaluate_submit</field>-->
+        <!--            <field name="model">hr.evaluate</field>-->
+        <!--            <field name="inherit_id" ref="hr_evaluate_view_form"/>-->
+        <!--            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <header>-->
+        <!--                    <button id="button_confirm_user" name="user_confirm" string="Confirm" type="object"-->
+        <!--                            class="btn-primary"/>-->
+        <!--                    <button id="button_cancel" name="cancel_user_confirm" string="Cancel" type="object"/>-->
+        <!--                </header>-->
+        <!--            </field>-->
+        <!--        </record>-->
 
         # action
         <record id="action_hr_evaluate" model="ir.actions.act_window">
