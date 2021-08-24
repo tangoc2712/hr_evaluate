@@ -19,7 +19,8 @@ You can assign several Evaluate per employee.
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/hr_evaluate_views.xml',
-        'views/hr_evaluate_form_views.xml'
+        'views/hr_evaluate_form_views.xml',
+        'views/hr_evaluate_config_view.xml',
     ],
     'demo': [],
     'installable': True,

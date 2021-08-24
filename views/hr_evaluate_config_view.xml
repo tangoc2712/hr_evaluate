@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+    <data>
+        <record id="hr_evaluate_config_view_tree" model="ir.ui.view">
+            <field name="name">hr.evaluate.config.tree</field>
+            <field name="model">hr.evaluate.config</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="criteria"/>
+                    <field name="percentage"/>
+                    <field name="rank"/>
+                    <field name="rank_str"/>
+                    <field name="type"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="hr_evaluate_config_view_form" model="ir.ui.view">
+            <field name="name">hr.evaluate.config.form</field>
+            <field name="model">hr.evaluate.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="criteria"/>
+                        <field name="percentage"/>
+                    </group>
+                    <group>
+                        <field name="rank"/>
+                        <field name="rank_str"/>
+                    </group>
+                    <group>
+                        <field name="type"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_hr_evaluate_config" model="ir.actions.act_window">
+            <field name="name">Config</field>
+            <field name="res_model">hr.evaluate.config</field>
+            <field name="view_mode">tree,form,activity,kanban</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new config
+                </p>
+            </field>
+        </record>
+        <menuitem
+                id="menu_hr_evaluate_config"
+                name="Config Maintain"
+                parent="menu_hr_evaluate"
+                action="action_hr_evaluate_config"
+                groups="base.group_system"
+                sequence="4"/>
+    </data>
+</odoo>

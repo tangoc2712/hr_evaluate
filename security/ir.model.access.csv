@@ -12,5 +12,13 @@ access_hr_evaluate_form2_user,access.hr.evaluate.form2_user,model_hr_evaluate_fo
 access_hr_evaluate_form2_sys,access.hr.evaluate.form2_sys,model_hr_evaluate_form2,base.group_system,1,1,1,1
 access_hr_evaluate_form2_hrm,access.hr.evaluate.form2_hrm,model_hr_evaluate_form2,hr.group_hr_manager,1,1,0,1
 
+access_hr_evaluate_form3_user,access.hr.evaluate.form3_user,model_hr_evaluate_form3,base.group_user,1,1,1,0
+access_hr_evaluate_form3_sys,access.hr.evaluate.form3_sys,model_hr_evaluate_form3,base.group_system,1,1,1,1
+access_hr_evaluate_form3_hrm,access.hr.evaluate.form3_hrm,model_hr_evaluate_form3,hr.group_hr_manager,1,1,0,1
+
+
+access_hr_evaluate_config_user,access.hr.evaluate.config_user,model_hr_evaluate_config,base.group_user,1,1,0,0
+access_hr_evaluate_config_sys,access.hr.evaluate.config_sys,model_hr_evaluate_config,base.group_system,1,1,1,1
+access_hr_evaluate_config_hrm,access.hr.evaluate.config_hrm,model_hr_evaluate_config,hr.group_hr_manager,1,1,0,1
 
 

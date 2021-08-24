@@ -6,20 +6,20 @@ class HrEvaluate(models.Model):
     _description = 'Employee Evaluate'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    account = fields.Char(string='Account')
-    # contract_id = fields.Many2one('hr.contract', string="Hợp đồng thử việc")
+    account = fields.Char(related='employee_id.work_email', string='Tài khoản')
+    contract_id = fields.Char(string="Hợp đồng")
     start_date = fields.Date(string="Ngày bắt đầu", readonly=True)
     end_date = fields.Date(string="Ngày kết thúc", readonly=True)
 
     employee_id = fields.Many2one('hr.employee', string='Người được đánh giá', tracking=True)
     department_id = fields.Many2one('hr.department', compute='_compute_employee_evaluate', store=True, readonly=True,
-                                    string="Department")
+                                    string="Phòng ban")
     job_id = fields.Many2one('hr.job', compute='_compute_employee_evaluate', store=True, readonly=True,
                              string='Chức vụ')
     company_id = fields.Many2one('res.company', required=True)
-    petition = fields.Html()
-    remark = fields.Html()
-    pm_assign = fields.Many2one('hr.employee', string='PM assigned',store=True,tracking=True)
+    petition = fields.Text()
+    remark = fields.Text()
+    pm_assign = fields.Many2one('hr.employee', string='PM assigned', store=True, tracking=True)
     dl_assign = fields.Many2one('hr.employee', compute="_compute_employee_evaluate", store=True, readonly=True)
     dl_assign_job_id = fields.Many2one('hr.job', compute='_compute_dl_evaluate', store=True, readonly=True,
                                        string='Chức vụ')
@@ -29,7 +29,19 @@ class HrEvaluate(models.Model):
         ('pm', 'PM Review'),
         ('dl', 'DL Review'),
         ('approve', 'Approved')
-    ], default='draft', tracking=True)
+    ], default='draft', tracking=True, string="Trạng thái")
+
+    employee_confirm = fields.Selection(selection=[
+        ('yes', 'Có'),
+        ('no', 'Không'),
+    ], store=True, string="Nhân viên xác nhận ký tiếp hợp đồng (*)")
+    dl_confirm = fields.Selection(selection=[
+        ('yes', 'Có'),
+        ('no', 'Không'),
+    ], store=True, string="	DL xác nhận ký tiếp hợp đồng (*)")
+    employee_reason = fields.Text(string="Lý do của nhân viên")
+    dl_reason = fields.Text(string="Lý do của DL")
+    hrm_reason = fields.Text(string="Lý do của HRM")
 
     employee_can_submit = fields.Boolean(default=True)
     pm_can_submit = fields.Boolean()
@@ -39,6 +51,7 @@ class HrEvaluate(models.Model):
 
     form_evaluate_ids = fields.One2many('hr.evaluate.form', 'employee_id', string='Performance Evaluate')
     form2_evaluate_ids = fields.One2many('hr.evaluate.form2', 'employee_id2', string='Discipline Evaluate')
+    form3_evaluate_ids = fields.One2many('hr.evaluate.form3', 'employee_id3', string='Conclusion Evaluate')
 
     @api.depends('employee_id')
     def _compute_employee_evaluate(self):
@@ -65,12 +78,38 @@ class HrEvaluate(models.Model):
         if contract:
             self.start_date = contract[0].date_start
             self.end_date = contract[0].date_end
+            self.contract_id = contract[0].name
 
-    # @api.depends('contract_id')
-    # def _compute_date_evaluate(self):
-    #     for evaluate in self.filtered('contract_id'):
-    #         evaluate.start_date = evaluate.contract_id.date_start
-    #         evaluate.end_date = evaluate.contract_id.date_end
+    @api.model
+    def default_get(self, fields):
+        res = super(HrEvaluate, self).default_get(fields)
+        print("testing.............")
+        # evaluate_config_id_ids = self.get_discipline_evaluate()
+        evaluate_config_id_ids = self.env['hr.evaluate.config'].search([])
+        print(evaluate_config_id_ids)
+        disciplines = []
+        ranks = []
+        for config_id in evaluate_config_id_ids:
+            if config_id.type == 'conclusion':
+                print("ok conclusion")
+                ranks.append((0, 0, {'evaluate_config_id': config_id.id,
+                                     'rank': config_id.rank_str
+                                     }))
+            elif config_id.type == 'discipline':
+                print("ok discipline")
+
+                disciplines.append((0, 0, {'evaluate_config_id': config_id.id,
+                                           'criteria': config_id.criteria,
+                                           'weight_num': f'{config_id.percentage}%',
+                                           'self_evaluate': 0,
+                                           'dl_evaluate': 0}))
+            elif config_id.type == 'sum':
+                disciplines.append((0, 0, {'evaluate_config_id': config_id.id}))
+
+        res.update({'form2_evaluate_ids': disciplines,
+                    'form3_evaluate_ids': ranks})
+        return res
+
 
     def action_employee_submit(self):
         self.dl_can_assign = True
@@ -85,13 +124,14 @@ class HrEvaluate(models.Model):
 
     def action_dl_submit(self):
         self.dl_can_submit = False
+        self.dl_can_assign = False
         self.state = 'approve'
 
     def cancel_user_confirm(self):
         self.state = 'draft'
 
     def action_dl_assign(self):
-        self.form_evaluate_ids.manager_edit = True
+        # self.form_evaluate_ids.manager_edit = True
         self.pm_can_submit = True
         self.dl_can_submit = False
         self.dl_can_assign = False

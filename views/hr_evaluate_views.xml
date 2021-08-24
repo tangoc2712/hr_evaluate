@@ -6,6 +6,7 @@
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
                 <tree string="Evaluate">
+                    <field name="contract_id"/>
                     <field name="employee_id"/>
                     <field name="account"/>
                     <field name="job_id"/>
@@ -30,11 +31,12 @@
             <field name="name">hr.evaluate.form</field>
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
-                <form string="Evaluate">
+                <form string="Evaluate" duplicate="false">
                     <field name="employee_can_submit" invisible="1"/>
                     <field name="pm_can_submit" invisible="1"/>
                     <field name="dl_can_submit" invisible="1"/>
                     <field name="dl_can_assign" invisible="1"/>
+                    <field name="can_retain" invisible="1"/>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"/>
                         <button name="action_employee_submit" groups="hr.group_hr_user"
@@ -45,7 +47,7 @@
                                 string="Submit" type="object" class="oe_highlight"/>
                         <button name="action_dl_submit" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_submit', '=', False)]}"
-                                string="Submit" type="object" class="oe_highlight"/>
+                                string="Approve" type="object" class="oe_highlight"/>
                         <button name="action_dl_assign" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_assign', '=', False)]}" string="Assign To PM/Team Lead"
                                 type="object" class="oe_highlight"/>
@@ -56,16 +58,18 @@
                         </div>
                         <group>
                             <group>
-                                <field name="employee_id"/>
+                                <field name="employee_id" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                       attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
                                 <field name="start_date" force_save="1"/>
                                 <field name="end_date" force_save="1" invisible="1"/>
+                                <field name="contract_id" force_save="1" invisible="1"/>
                             </group>
                             <group>
                                 <field name="dl_assign" string="DL đánh giá"/>
                                 <field name="dl_assign_job_id"/>
-                                <field name="pm_assign" readonly="1" attrs="{'invisible': [('pm_assign','=',False)]}"/>
+                                <field name="pm_assign" groups="hr_evaluate.group_hr_dl" attrs="{'readonly': [('dl_can_assign', '=', False)]}"/>
                             </group>
                         </group>
                         <group>
@@ -84,6 +88,7 @@
                             </tree>
                             <form>
                                 <group>
+                                    <field name="manager_edit"/>
                                     <field name="job_des"/>
                                     <field name="par_level"/>
                                     <field name="comp_level"/>
@@ -101,31 +106,73 @@
                             <tree create="false" editable="bottom" delete="0">
                                 <field name="self_evaluate_edit" invisible="1"/>
                                 <field name="dl_evaluate_edit" invisible="1"/>
-                                <field name="criteria" force_save="1"/>
+                                <field name="criteria"/>
                                 <field name="weight_num" force_save="1"/>
                                 <field name="self_evaluate" attrs="{'readonly': [('self_evaluate_edit','=',False)]}"/>
-                                <field name="dl_evaluate"
-                                       attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
+                                <field name="dl_evaluate" attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
                                 <field name="des"/>
                             </tree>
                             <form>
                                 <group>
-                                    <field name="criteria" force_save="1" text="Total"/>
-                                    <field name="weight_num" force_save="1"/>
-                                    <field name="self_evaluate" sum="Total"/>
-                                    <field name="dl_evaluate" text="Total"/>
+                                    <field name="criteria"/>
+                                    <field name="weight_num"/>
+                                    <field name="self_evaluate"/>
+                                    <field name="dl_evaluate"/>
                                     <field name="des"/>
                                 </group>
                             </form>
                         </field>
+                        <i>Lưu ý: Điểm 100 là điểm dành cho nhân viên hoàn thành tốt công việc. Điểm 110 là điểm max
+                            dành cho nhân viên có thành tích xuất sắc
+                        </i>
+                        <br/>
+                        <h4>
+                            <b>
+                                <label for="petition" string="A. Ý KIẾN, KIẾN NGHỊ, ĐỀ XUẤT CỦA NGƯỜI ĐƯỢC ĐÁNH GIÁ"/>
+                            </b>
+                        </h4>
+                        <field name="petition" nolabel="1" force_save="1"
+                               attrs="{'readonly': [('employee_can_submit','=',False)]}"/>
+                        <br/>
+                        <h4>
+                            <b>
+                                <label for="remark" string="B. Ý KIẾN NHẬN XÉT CỦA QUẢN LÝ TRỰC TIẾP"/>
+                            </b>
+                        </h4>
+                        <field name="remark" nolabel="1" force_save="1"
+                               attrs="{'readonly': [('can_retain', '=', False), ('pm_can_submit','=',False), ('dl_can_submit', '=', False)]}"/>
+                        <h4>
+                            <b>
+                                <label for="remark" string="C. KẾT LUẬN CHUNG"/>
+                            </b>
+                        </h4>
+                        <field name="form3_evaluate_ids" force_save="1">
+                            <tree create="false" editable="bottom" delete="0">
+                                <field name="rank" force_save="1"/>
+                                <field name="self_rank"/>
+                                <field name="manager_rank"/>
+                            </tree>
+                            <form>
+                                <group>
+                                    <field name="rank"/>
+                                </group>
+                            </form>
+                        </field>
                         <group>
-                            <div style="font-weight: bold;">A. Ý kiến, kiến nghị</div>
+                            <field name="employee_confirm" widget="radio" readonly="0"
+                                   attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="dl_confirm" widget="radio" readonly="0" force_save="1"
+                                   attrs="{'readonly': ['|', ('dl_can_submit', '=', False), ('state', '!=', 'dl')]}"/>
                         </group>
-                        <field name="petition"/>
                         <group>
-                            <div style="font-weight: bold;">B. Ý kiến nhận xét</div>
+                            <field name="employee_reason"
+                                   attrs="{'required': [('employee_confirm', '=', 'no')], 'invisible': [('employee_confirm', '!=', 'no')], 'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="dl_reason"
+                                   attrs="{'required': [('dl_confirm', '=', 'no')], 'invisible': ['|',('state', '=', 'draft'),('dl_confirm', '!=', 'no')], 'readonly': ['|','|',('state', '!=', 'dl'),('dl_confirm', '!=', 'no'), ('dl_can_submit', '=', False)]}"
+                                   force_save="1"/>
+                            <field name="hrm_reason" style="color:red;"
+                                   attrs="{'invisible': [('state', '!=', 'approve'), ('hrm_reason', '=', False)]}"/>
                         </group>
-                        <field name="remark"/>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids"/>
@@ -135,19 +182,26 @@
                 </form>
             </field>
         </record>
-        <!--        <record id="inherited_evaluate_submit" model="ir.ui.view">-->
-        <!--            <field name="name">inherited.evaluate_submit</field>-->
+        <!--        <record id="dl_assign_view_form" model="ir.ui.view">-->
+        <!--            <field name="name">dl.assign.form</field>-->
         <!--            <field name="model">hr.evaluate</field>-->
-        <!--            <field name="inherit_id" ref="hr_evaluate_view_form"/>-->
-        <!--            <field name="groups_id" eval="[(4, ref('base.group_user'))]"/>-->
         <!--            <field name="arch" type="xml">-->
-        <!--                <header>-->
-        <!--                    <button id="button_confirm_user" name="user_confirm" string="Confirm" type="object"-->
-        <!--                            class="btn-primary"/>-->
-        <!--                    <button id="button_cancel" name="cancel_user_confirm" string="Cancel" type="object"/>-->
-        <!--                </header>-->
+        <!--                <form string="Form DL Assign" create="false" delete="false" modifiers="{}" invisible="1">-->
+        <!--                    <group modifiers="{}">-->
+        <!--                        <field name="pm_assign" required="1"-->
+        <!--                               options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}" can_create="true"-->
+        <!--                               can_write="true" modifiers="{'required':true}"/>-->
+        <!--                        <field name="notes" required="1" modifiers="{'required':true}"/>-->
+        <!--                    </group>-->
+        <!--                    <footer modifiers="{}">-->
+        <!--                        <button name="action_dl_assign" string="Confirm" type="object" class="oe_highlight"-->
+        <!--                                modifiers="{}" options="{}"/>-->
+        <!--                        <button string="Cancel" class="btn-default" special="cancel" modifiers="{}" options="{}"/>-->
+        <!--                    </footer>-->
+        <!--                </form>-->
         <!--            </field>-->
         <!--        </record>-->
+
 
         # action
         <record id="action_hr_evaluate" model="ir.actions.act_window">
