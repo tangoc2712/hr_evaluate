@@ -48,6 +48,8 @@ class HrEvaluateForm2(models.Model):
     dl_evaluate = fields.Float(string='Quản lý đánh giá')
     dl_evaluate_edit = fields.Boolean(string="PM/DL can edit")
     des = fields.Char(string="Ghi chú")
+    edit = fields.Boolean(default=False)
+
 
 
 class HrEvaluateForm3(models.Model):
@@ -56,9 +58,11 @@ class HrEvaluateForm3(models.Model):
 
     evaluate_config_id = fields.Many2one('hr.evaluate.config', string="Config ID")
     employee_id3 = fields.Many2one('hr.evaluate', string="Form Id 3")
-    manager_rank = fields.Boolean(string="Quản lý đánh giá")
-    self_rank = fields.Boolean(string="Cá nhân đánh giá đánh giá")
+    manager_rank = fields.Boolean(string="Quản lý đánh giá", readonly=True)
+    self_rank = fields.Boolean(string="Cá nhân đánh giá đánh giá", readonly=True)
     rank = fields.Char(string="Loại")
+    edit = fields.Boolean(default=False)
+
 
 
 

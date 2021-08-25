@@ -14,10 +14,11 @@ Add all information on the employee form to manage Evaluate.
 You can assign several Evaluate per employee.
     """,
     'website': 'https://www.odoo.com/page/employees',
-    'depends': ['hr'],
+    'depends': ['hr', 'sale'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
+        'data/mail_template.xml',
         'views/hr_evaluate_views.xml',
         'views/hr_evaluate_form_views.xml',
         'views/hr_evaluate_config_view.xml',

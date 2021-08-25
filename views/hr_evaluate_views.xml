@@ -48,17 +48,18 @@
                         <button name="action_dl_submit" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_submit', '=', False)]}"
                                 string="Approve" type="object" class="oe_highlight"/>
-                        <button name="action_dl_assign" groups="hr_evaluate.group_hr_dl"
+                        <button name="action_dl_to_pm" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_assign', '=', False)]}" string="Assign To PM/Team Lead"
                                 type="object" class="oe_highlight"/>
                     </header>
-                    <sheet>
+                    <sheet style="max-width: calc(100% - 32px); overflow-x: auto;">
                         <div class="title">
                             <h1 style="text-align:center;">PHIẾU ĐÁNH GIÁ THỬ VIỆC</h1>
                         </div>
                         <group>
                             <group>
-                                <field name="employee_id" options="{'no_quick_create': True, 'no_create_edit' : True}"
+                                <field name="employee_id" modifiers="{'required':true, 'readonly':true}"
+                                       options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}"
                                        attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
@@ -69,7 +70,7 @@
                             <group>
                                 <field name="dl_assign" string="DL đánh giá"/>
                                 <field name="dl_assign_job_id"/>
-                                <field name="pm_assign" groups="hr_evaluate.group_hr_dl" attrs="{'readonly': [('dl_can_assign', '=', False)]}"/>
+                                <field name="pm_assign" readonly="1" attrs="{'invisible': [('pm_assign','=',False)]}"/>
                             </group>
                         </group>
                         <group>
@@ -79,8 +80,8 @@
                                attrs="{'readonly': [('state', '=', 'approve')]}">
                             <tree editable="bottom">
                                 <field name="manager_edit" invisible="1"/>
-                                <field name="job_des"/>
-                                <field name="par_level"/>
+                                <field name="job_des" force_save="1"/>
+                                <field name="par_level" force_save="1"/>
                                 <field name="comp_level"/>
                                 <field name="quantity"/>
                                 <field name="des"/>
@@ -105,9 +106,10 @@
                                attrs="{'readonly': [('state', '=', 'approve')]}">
                             <tree create="false" editable="bottom" delete="0">
                                 <field name="self_evaluate_edit" invisible="1"/>
+                                <field name="edit" invisible="1"/>
                                 <field name="dl_evaluate_edit" invisible="1"/>
-                                <field name="criteria"/>
-                                <field name="weight_num" force_save="1"/>
+                                <field name="criteria" force_save="1" attrs="{'readonly': [('edit','=',False)]}"/>
+                                <field name="weight_num" force_save="1" attrs="{'readonly': [('edit','=',False)]}"/>
                                 <field name="self_evaluate" attrs="{'readonly': [('self_evaluate_edit','=',False)]}"/>
                                 <field name="dl_evaluate" attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
                                 <field name="des"/>
@@ -148,7 +150,8 @@
                         </h4>
                         <field name="form3_evaluate_ids" force_save="1">
                             <tree create="false" editable="bottom" delete="0">
-                                <field name="rank" force_save="1"/>
+                                <field name="edit" invisible="1"/>
+                                <field name="rank" force_save="1" readonly="1"/>
                                 <field name="self_rank"/>
                                 <field name="manager_rank"/>
                             </tree>
@@ -182,25 +185,26 @@
                 </form>
             </field>
         </record>
-        <!--        <record id="dl_assign_view_form" model="ir.ui.view">-->
-        <!--            <field name="name">dl.assign.form</field>-->
-        <!--            <field name="model">hr.evaluate</field>-->
-        <!--            <field name="arch" type="xml">-->
-        <!--                <form string="Form DL Assign" create="false" delete="false" modifiers="{}" invisible="1">-->
-        <!--                    <group modifiers="{}">-->
-        <!--                        <field name="pm_assign" required="1"-->
-        <!--                               options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}" can_create="true"-->
-        <!--                               can_write="true" modifiers="{'required':true}"/>-->
-        <!--                        <field name="notes" required="1" modifiers="{'required':true}"/>-->
-        <!--                    </group>-->
-        <!--                    <footer modifiers="{}">-->
-        <!--                        <button name="action_dl_assign" string="Confirm" type="object" class="oe_highlight"-->
-        <!--                                modifiers="{}" options="{}"/>-->
-        <!--                        <button string="Cancel" class="btn-default" special="cancel" modifiers="{}" options="{}"/>-->
-        <!--                    </footer>-->
-        <!--                </form>-->
-        <!--            </field>-->
-        <!--        </record>-->
+
+        <record id="dl_assign_view_form" model="ir.ui.view">
+            <field name="name">dl.assign.form</field>
+            <field name="model">hr.evaluate</field>
+            <field name="active">false</field>
+            <field name="arch" type="xml">
+                <form string="Form DL Assign" create="false" delete="false">
+                    <group modifiers="{}">
+                        <field name="pm_assign" required="1"
+                               options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}" can_create="true"
+                               can_write="true" modifiers="{'required':true}"/>
+                        <field name="notes" required="1" modifiers="{'required':true}"/>
+                    </group>
+                    <footer>
+                        <button name="action_dl_assign" string="Confirm" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
 
         # action

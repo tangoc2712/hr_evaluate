@@ -11,6 +11,7 @@ class HrEvaluate(models.Model):
     start_date = fields.Date(string="Ngày bắt đầu", readonly=True)
     end_date = fields.Date(string="Ngày kết thúc", readonly=True)
 
+    trail_contract_id = fields.Many2one('hr.contract', string='Hợp đồng thử việc', tracking=True)
     employee_id = fields.Many2one('hr.employee', string='Người được đánh giá', tracking=True)
     department_id = fields.Many2one('hr.department', compute='_compute_employee_evaluate', store=True, readonly=True,
                                     string="Phòng ban")
@@ -110,8 +111,11 @@ class HrEvaluate(models.Model):
                     'form3_evaluate_ids': ranks})
         return res
 
-
     def action_employee_submit(self):
+        # template_id = self.env.ref("hr_evaluate.email_template_evaluate_em_to_dl").id
+        # print(template_id)
+        # self.env['mail.template'].browse(template_id).send_mail(self.id)
+
         self.dl_can_assign = True
         self.dl_can_submit = True
         self.employee_can_submit = False
@@ -136,3 +140,16 @@ class HrEvaluate(models.Model):
         self.dl_can_submit = False
         self.dl_can_assign = False
         self.state = 'pm'
+
+    def action_dl_to_pm(self):
+        form_view = self.env.ref('hr_evaluate.dl_assign_view_form')
+        return {
+            'name': 'Form DL Assign',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': form_view.id,
+            'res_model': 'hr.evaluate',
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new'
+        }
