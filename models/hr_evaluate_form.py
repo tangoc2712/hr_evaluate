@@ -6,33 +6,19 @@ class HrEvaluateForm(models.Model):
     _name = "hr.evaluate.form"
     _description = "Performance Form"
     employee_id = fields.Many2one('hr.evaluate', string="Employee Id")
-    job_des = fields.Char(string='Nội dung công việc')
-    par_level = fields.Char(string='Mức độ tham gia')
-    comp_level = fields.Integer(string="Mức độ hoàn thành (%)")
+    job_des = fields.Char(string='Nội dung công việc', required=True)
+    par_level = fields.Char(string='Mức độ tham gia', required=True)
+    comp_level = fields.Integer(string="Mức độ hoàn thành (%)", required=True)
     quantity = fields.Selection(
         [('excellent', 'Xuất Sắc'),
          ('good', 'Tốt'),
          ('kha', 'Khá'),
          ('mid', 'Trung Bình'),
-         ('fail', 'Chưa Đạt')])
+         ('fail', 'Chưa Đạt')], required=True)
     des = fields.Char(string='Ghi chú')
     manager_eval = fields.Integer(string='Quản lý đánh giá ')
 
-    manager_edit = fields.Boolean(string='Manage can edit', default=False, readonly=True)
-
-    def write(self, values):
-        """Override default Odoo write function and extend."""
-        check = super(HrEvaluateForm, self).write(values)
-        if check is None:
-            raise UserError("Please choose 1 hobby at least!!!")
-        return check
-
-    @api.onchange('employee_id')
-    def _onchange_contract_id(self):
-        statee = self.env['hr.evaluate'].sudo().search([('employee_id', '=', self.employee_id.id),
-                                                        ('state', '!=', 'draft')])
-        if statee:
-            self.manager_edit = True
+    manager_edit = fields.Boolean(string="DL can edit", default=False, readonly=True)
 
 
 class HrEvaluateForm2(models.Model):
@@ -42,14 +28,25 @@ class HrEvaluateForm2(models.Model):
     evaluate_config_id = fields.Many2one('hr.evaluate.config', string="Config ID")
     employee_id2 = fields.Many2one('hr.evaluate', string="Form Id 2")
     criteria = fields.Char(string='Tiêu chí đánh giá')
-    weight_num = fields.Char(string='Trọng số (%)')
+    weight_num = fields.Float(string='Trọng số (%)')
     self_evaluate = fields.Float(string='Cá nhân đánh giá')
     self_evaluate_edit = fields.Boolean(string="Employee can edit")
-    dl_evaluate = fields.Float(string='Quản lý đánh giá')
+    dl_evaluate = fields.Float(string='Quản lý đánh giá', digits=0)
     dl_evaluate_edit = fields.Boolean(string="PM/DL can edit")
     des = fields.Char(string="Ghi chú")
-    edit = fields.Boolean(default=False)
 
+    point_self = fields.Float(compute="_calculate_point")
+    point_dl = fields.Float(compute="_calculate_point")
+    total = fields.Float()
+
+    @api.onchange('self_evaluate', 'weight_num', )
+    def _compute_sum(self):
+        total = 0
+        for re in self:
+            re.self_evaluate = self.self_evaluate * self.weight_num / 100
+            total += re.self_evaluate
+        self.total = total
+        print(self.total)
 
 
 class HrEvaluateForm3(models.Model):
@@ -61,71 +58,6 @@ class HrEvaluateForm3(models.Model):
     manager_rank = fields.Boolean(string="Quản lý đánh giá", readonly=True)
     self_rank = fields.Boolean(string="Cá nhân đánh giá đánh giá", readonly=True)
     rank = fields.Char(string="Loại")
-    edit = fields.Boolean(default=False)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 class HrEvaluate(models.Model):

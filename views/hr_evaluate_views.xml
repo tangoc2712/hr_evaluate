@@ -31,7 +31,8 @@
             <field name="name">hr.evaluate.form</field>
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
-                <form string="Evaluate" duplicate="false">
+<!--                create="false" duplicate="false" delete="false"-->
+                <form string="Evaluate">
                     <field name="employee_can_submit" invisible="1"/>
                     <field name="pm_can_submit" invisible="1"/>
                     <field name="dl_can_submit" invisible="1"/>
@@ -53,18 +54,24 @@
                                 type="object" class="oe_highlight"/>
                     </header>
                     <sheet style="max-width: calc(100% - 32px); overflow-x: auto;">
+                        <div style="width:100%">
+                            <field name="mess" style="width:100%; white-space: pre-wrap; padding-bottom: 5px;"
+                                   class="bg-warning text-dark px-3 py-2 oe_read_only" nolabel="1" readonly="1"
+                                   attrs="{'invisible': ['|', ('pm_assign','=',False), ('state', '=', 'approve')]}"/>
+                        </div>
                         <div class="title">
                             <h1 style="text-align:center;">PHIẾU ĐÁNH GIÁ THỬ VIỆC</h1>
                         </div>
                         <group>
                             <group>
-                                <field name="employee_id" modifiers="{'required':true, 'readonly':true}"
+                                <field name="employee_id"
                                        options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}"
-                                       attrs="{'readonly': [('state','!=','draft')]}"/>
+                                       readonly="1"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
                                 <field name="start_date" force_save="1"/>
                                 <field name="end_date" force_save="1" invisible="1"/>
+                                <field name="company_id" force_save="1" invisible="1"/>
                                 <field name="contract_id" force_save="1" invisible="1"/>
                             </group>
                             <group>
@@ -106,21 +113,24 @@
                                attrs="{'readonly': [('state', '=', 'approve')]}">
                             <tree create="false" editable="bottom" delete="0">
                                 <field name="self_evaluate_edit" invisible="1"/>
-                                <field name="edit" invisible="1"/>
                                 <field name="dl_evaluate_edit" invisible="1"/>
-                                <field name="criteria" force_save="1" attrs="{'readonly': [('edit','=',False)]}"/>
-                                <field name="weight_num" force_save="1" attrs="{'readonly': [('edit','=',False)]}"/>
-                                <field name="self_evaluate" attrs="{'readonly': [('self_evaluate_edit','=',False)]}"/>
-                                <field name="dl_evaluate" attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
+                                <field name="criteria" force_save="1" readonly="1"/>
+                                <field name="weight_num" force_save="1" readonly="1"/>
+                                <field name="self_evaluate" sum="Sum"
+                                       attrs="{'readonly': [('self_evaluate_edit','!=',False)]}"/>
+                                <field name="dl_evaluate" sum="SumDL"
+                                       attrs="{'readonly': [('dl_evaluate_edit','!=',False)]}"/>
                                 <field name="des"/>
+
                             </tree>
                             <form>
                                 <group>
-                                    <field name="criteria"/>
-                                    <field name="weight_num"/>
-                                    <field name="self_evaluate"/>
-                                    <field name="dl_evaluate"/>
+                                    <field name="criteria" force_save="1" text="Total"/>
+                                    <field name="weight_num" force_save="1"/>
+                                    <field name="self_evaluate" force_save="1"/>
+                                    <field name="dl_evaluate" force_save="1"/>
                                     <field name="des"/>
+
                                 </group>
                             </form>
                         </field>
@@ -150,7 +160,6 @@
                         </h4>
                         <field name="form3_evaluate_ids" force_save="1">
                             <tree create="false" editable="bottom" delete="0">
-                                <field name="edit" invisible="1"/>
                                 <field name="rank" force_save="1" readonly="1"/>
                                 <field name="self_rank"/>
                                 <field name="manager_rank"/>
@@ -200,7 +209,7 @@
                     </group>
                     <footer>
                         <button name="action_dl_assign" string="Confirm" type="object" class="oe_highlight"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
+                        <button string="Cancel" special="cancel" class="oe_link"/>
                     </footer>
                 </form>
             </field>
