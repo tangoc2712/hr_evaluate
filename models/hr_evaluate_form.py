@@ -37,16 +37,16 @@ class HrEvaluateForm2(models.Model):
 
     point_self = fields.Float(compute="_calculate_point")
     point_dl = fields.Float(compute="_calculate_point")
-    total = fields.Float()
 
-    @api.onchange('self_evaluate', 'weight_num', )
+    # total = fields.Float(compute='_compute_sum')
+
+    @api.depends('self_evaluate', 'weight_num', )
     def _compute_sum(self):
         total = 0
         for re in self:
-            re.self_evaluate = self.self_evaluate * self.weight_num / 100
+            re.self_evaluate = re.self_evaluate * re.weight_num
             total += re.self_evaluate
-        self.total = total
-        print(self.total)
+            print(total)
 
 
 class HrEvaluateForm3(models.Model):

@@ -22,3 +22,5 @@ class HrEvaluateConfig(models.Model):
         ('sum', 'sum'),
     ], string="Configuration type")
 
+
+

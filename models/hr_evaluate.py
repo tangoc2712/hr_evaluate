@@ -122,6 +122,7 @@ class HrEvaluate(models.Model):
         disciplines = []
         ranks = []
         for config_id in evaluate_config_id_ids:
+
             if config_id.type == 'conclusion':
                 ranks.append((0, 0, {'evaluate_config_id': config_id.id,
                                      'rank': config_id.rank_str
@@ -134,6 +135,7 @@ class HrEvaluate(models.Model):
                                            'dl_evaluate': 0}))
             elif config_id.type == 'sum':
                 disciplines.append((0, 0, {'evaluate_config_id': config_id.id,
+                                           # 'self_evaluate': sum(disciplines.self_evaluate),
                                            }))
 
         res.update({'form2_evaluate_ids': disciplines,
@@ -145,17 +147,33 @@ class HrEvaluate(models.Model):
         # print(template_id)
         # self.env['mail.template'].browse(template_id).send_mail(self.id)
 
+        # validate & raise message error
+        if not self.form_evaluate_ids:
+            raise UserError("Chọn ít nhất một nội dung công việc")
+        if not self.petition:
+            raise UserError("Hãy điền vào phần Ý kiến, kiến nghị")
+        if not self.employee_confirm:
+            raise UserError("Nhân viên hãy chọn có tiếp tục hợp đồng không")
+
         self.dl_can_assign = True
         self.dl_can_submit = True
         self.employee_can_submit = False
         self.state = 'dl'
 
     def action_pm_submit(self):
+        # validate & raise message error
+        if not self.remark:
+            raise UserError("Hãy điền vào phần Ý kiến nhận xét")
+
         self.pm_can_submit = False
         self.dl_can_submit = True
         self.state = 'dl'
 
     def action_dl_submit(self):
+        # validate & raise message error
+        if not self.dl_confirm:
+            raise UserError("DL hãy chọn có tiếp tục hợp đồng không")
+
         self.dl_can_submit = False
         self.dl_can_assign = False
         self.state = 'approve'
@@ -182,21 +200,3 @@ class HrEvaluate(models.Model):
             'res_id': self.id,
             'target': 'new'
         }
-
-    # # validate function
-    # @api.constrains('form_evaluate_ids', 'state', 'employee_confirm', 'petition', 'remark')
-    # def _onchange_value(self):
-    #     if (not self.form_evaluate_ids) and (self.employee_can_submit is True):
-    #         raise UserError("Chọn ít nhất một nội dung công việc")
-    #     if (not self.petition) and (self.employee_can_submit is True):
-    #         raise UserError("Hãy điền vào phần Ý kiến, kiến nghị")
-    #
-    #     # if not self.remark:
-    #     #     if self.state == 'pm':
-    #     #         raise UserError("Hãy điền vào phần Ý kiến nhận xét")
-    #     if (not self.employee_confirm) and (self.employee_can_submit is True):
-    #         raise UserError("Nhân viên hãy chọn có tiếp tục hợp đồng không")
-
-        # if not self.dl_confirm:
-        #     if self.state == 'approve' and self.dl_can_assign is False:
-        #         raise UserError("DL hãy chọn có tiếp tục hợp đồng không")

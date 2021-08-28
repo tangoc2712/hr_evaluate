@@ -116,9 +116,9 @@
                                 <field name="dl_evaluate_edit" invisible="1"/>
                                 <field name="criteria" force_save="1" readonly="1"/>
                                 <field name="weight_num" force_save="1" readonly="1"/>
-                                <field name="self_evaluate" sum="Sum"
+                                <field name="self_evaluate"
                                        attrs="{'readonly': [('self_evaluate_edit','!=',False)]}"/>
-                                <field name="dl_evaluate" sum="SumDL"
+                                <field name="dl_evaluate"
                                        attrs="{'readonly': [('dl_evaluate_edit','!=',False)]}"/>
                                 <field name="des"/>
 
@@ -127,8 +127,8 @@
                                 <group>
                                     <field name="criteria" force_save="1" text="Total"/>
                                     <field name="weight_num" force_save="1"/>
-                                    <field name="self_evaluate" force_save="1"/>
-                                    <field name="dl_evaluate" force_save="1"/>
+                                    <field name="self_evaluate"/>
+                                    <field name="dl_evaluate"/>
                                     <field name="des"/>
 
                                 </group>
