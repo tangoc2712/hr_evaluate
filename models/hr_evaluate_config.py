@@ -24,3 +24,5 @@ class HrEvaluateConfig(models.Model):
 
 
 
+
+

@@ -35,19 +35,6 @@ class HrEvaluateForm2(models.Model):
     dl_evaluate_edit = fields.Boolean(string="PM/DL can edit")
     des = fields.Char(string="Ghi chú")
 
-    point_self = fields.Float(compute="_calculate_point")
-    point_dl = fields.Float(compute="_calculate_point")
-
-    # total = fields.Float(compute='_compute_sum')
-
-    @api.depends('self_evaluate', 'weight_num', )
-    def _compute_sum(self):
-        total = 0
-        for re in self:
-            re.self_evaluate = re.self_evaluate * re.weight_num
-            total += re.self_evaluate
-            print(total)
-
 
 class HrEvaluateForm3(models.Model):
     _name = "hr.evaluate.form3"

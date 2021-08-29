@@ -31,7 +31,7 @@
             <field name="name">hr.evaluate.form</field>
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
-<!--                create="false" duplicate="false" delete="false"-->
+                <!--                create="false" duplicate="false" delete="false"-->
                 <form string="Evaluate">
                     <field name="employee_can_submit" invisible="1"/>
                     <field name="pm_can_submit" invisible="1"/>
@@ -66,7 +66,7 @@
                             <group>
                                 <field name="employee_id"
                                        options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}"
-                                       readonly="1"/>
+                                       readonly="0"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
                                 <field name="start_date" force_save="1"/>
@@ -106,6 +106,7 @@
                                 </group>
                             </form>
                         </field>
+
                         <group>
                             <div style="font-weight: bold;">II. ĐÁNH GIÁ VỀ KỶ LUẬT LAO ĐỘNG, KỸ NĂNG LÀM VIỆC</div>
                         </group>
@@ -130,14 +131,18 @@
                                     <field name="self_evaluate"/>
                                     <field name="dl_evaluate"/>
                                     <field name="des"/>
-
                                 </group>
                             </form>
                         </field>
-                        <i>Lưu ý: Điểm 100 là điểm dành cho nhân viên hoàn thành tốt công việc. Điểm 110 là điểm max
-                            dành cho nhân viên có thành tích xuất sắc
-                        </i>
-                        <br/>
+                        <field name="total_self" invisible="1"/>
+                        <field name="total_dl" invisible="1"/>
+                        <group>
+                            <i>Lưu ý: Điểm 100 là điểm dành cho nhân viên hoàn thành tốt công việc. Điểm 110 là điểm max
+                                dành cho nhân viên có thành tích xuất sắc
+                            </i>
+                        </group>
+
+
                         <h4>
                             <b>
                                 <label for="petition" string="A. Ý KIẾN, KIẾN NGHỊ, ĐỀ XUẤT CỦA NGƯỜI ĐƯỢC ĐÁNH GIÁ"/>
@@ -161,8 +166,8 @@
                         <field name="form3_evaluate_ids" force_save="1">
                             <tree create="false" editable="bottom" delete="0">
                                 <field name="rank" force_save="1" readonly="1"/>
-                                <field name="self_rank"/>
-                                <field name="manager_rank"/>
+                                <field name="self_rank" force_save="1"/>
+                                <field name="manager_rank" force_save="1"/>
                             </tree>
                             <form>
                                 <group>
