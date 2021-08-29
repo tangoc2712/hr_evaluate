@@ -66,7 +66,7 @@
                             <group>
                                 <field name="employee_id"
                                        options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}"
-                                       readonly="0"/>
+                                       readonly="1"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
                                 <field name="start_date" force_save="1"/>
