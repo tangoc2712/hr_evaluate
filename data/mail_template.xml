@@ -1,19 +1,97 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-    <record id="email_template_evaluate_em_to_dl" model="mail.template">
-        <field name="name">Evaluate: Send to DL</field>
-        <field name="model_id" ref="model_hr_evaluate"/>
-        <field name="email_from">${(object.env.user.login) |safe}</field>
-        <field name="email_to">${object.employee_id.work_email}</field>
-        <field name="subject"> Yêu cầu đánh giá thử việc nhân viên</field>
-        <field name="body_html" type="html">
-            <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif;
-                                font-size: 13px; color: #222222; background-color: #ffffff; word-break: break-word;">
-                <p>Dear Anh/Chị,</p>
-                <br/>
-            </div>
-        </field>
-    </record>
+    <data noupdate="1">
+<!--        Send mail to DL assign employee accept-->
+        <record id="mail_template_emp_acc" model="mail.template">
+            <field name="name">VTI.dl_assign_emp_accept</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">EVA ASSIGN </field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.employee_id.parent_id.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Nhân viên ${object.employee_id.name} sẽ hết hạn hợp đồng từ ${object.end_date} và đã xác nhận ký tiếp</p>
+                <p>Anh chi vui long xac nhan   </p>
+                <p>Regards,</p>
+            </field>
+        </record>
+
+        <!--        Send mail  employee reject-->
+        <record id="mail_template_emp_rej" model="mail.template">
+            <field name="name">VTI.dl_assign_emp_reject</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">EVA REJECT </field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.employee_id.parent_id.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Nhân viên ${object.employee_id.name} sẽ hết hạn hợp đồng từ ${object.end_date} và từ chối ký tiếp hợp đồng</p>
+                <p>lý do: ${object.employee_reason}</p>
+                <p>Anh chi vui long xac nhan   </p>
+                <p>Regards,</p>
+            </field>
+        </record>
+
+        <!--        Send mail to PM-->
+        <record id="mail_template_pm" model="mail.template">
+            <field name="name">VTI.pm_confirm</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">PM REVIEW</field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.pm_assign.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Nhân viên ${object.employee_id.name} sẽ hết hạn hợp đồng từ ${object.end_date} và đã xác nhận ký tiếp</p>
+                <p>Anh chi vui long xac nhan   </p>
+                <p>Regards,</p>
+            </field>
+        </record>
+
+        <!--        Send mail to dl_confirm-->
+        <record id="mail_template_dl_to_confirm" model="mail.template">
+            <field name="name">VTI.dl_to_confirm</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">DL CONFIRM</field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.employee_id.parent_id.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Nhân viên ${object.employee_id.name} sẽ hết hạn hợp đồng từ ${object.end_date} và đã xác nhận ký tiếp</p>
+                <p>Anh chi vui long xac nhan   </p>
+                <p>Regards,</p>
+            </field>
+        </record>
+
+        <!--        dl đồng ý-->
+           <record id="mail_template_dl_app" model="mail.template">
+            <field name="name">VTI.dl_confirm</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">DL CONFIRM</field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.employee_id.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Yêu cầu ký tiếp hợp đồng của anh/ chị đã được xác nhận </p>
+                <p>chi tiet xem tai </p>
+                <p>Regards,</p>
+            </field>
+        </record>
+
+        <!--        dl từ chối-->
+           <record id="mail_template_dl_rej" model="mail.template">
+            <field name="name">VTI.dl_reject</field>
+            <field name="model_id" ref="model_hr_evaluate"/>
+            <field name="subject">DL REJECT</field>
+            <field name="email_from">${'mystery@vti.com.vn'}</field>
+            <field name="email_to">${object.employee_id.work_email}</field>
+            <field name="body_html" type="html">
+                <p>Dear anh/chi, </p>
+                <p>Yêu cầu ký tiếp hợp đồng của anh/ chị đã bị từ chối </p>
+
+                <p>Regards,</p>
+            </field>
+        </record>
+    </data>
 
 </odoo>
-

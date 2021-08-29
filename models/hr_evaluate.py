@@ -203,22 +203,28 @@ class HrEvaluate(models.Model):
         return res
 
     def action_employee_submit(self):
-        # template_id = self.env.ref("hr_evaluate.email_template_evaluate_em_to_dl").id
-        # print(template_id)
-        # self.env['mail.template'].browse(template_id).send_mail(self.id)
 
-        # validate & raise message error
         if not self.form_evaluate_ids:
             raise UserError("Chọn ít nhất một nội dung công việc")
         if not self.petition:
             raise UserError("Hãy điền vào phần Ý kiến, kiến nghị")
         if not self.employee_confirm:
             raise UserError("Nhân viên hãy chọn có tiếp tục hợp đồng không")
+        if self.employee_confirm == 'no' :
+            template_id = self.env.ref("hr_evaluate.mail_template_emp_rej").id
+            print(template_id)
+            template = self.env['mail.template'].browse(template_id)
+            template.send_mail(self.id, force_send=True)
 
-        self.dl_can_assign = True
-        self.dl_can_submit = True
-        self.employee_can_submit = False
-        self.state = 'dl'
+        if  self.employee_confirm == 'yes':
+            self.dl_can_assign = True
+            self.dl_can_submit = True
+            self.employee_can_submit = False
+            self.state = 'dl'
+            template_id = self.env.ref("hr_evaluate.mail_template_emp_acc").id
+            print(template_id)
+            template = self.env['mail.template'].browse(template_id)
+            template.send_mail(self.id, force_send=True)
 
     def action_pm_submit(self):
         # validate & raise message error
@@ -229,14 +235,34 @@ class HrEvaluate(models.Model):
         self.dl_can_submit = True
         self.state = 'dl'
 
+        template_id = self.env.ref("mail_template_dl_to_confirm").id
+        print(template_id)
+        template = self.env['mail.template'].browse(template_id)
+        template.send_mail(self.id, force_send=True)
+
     def action_dl_submit(self):
         # validate & raise message error
         if not self.dl_confirm:
             raise UserError("DL hãy chọn có tiếp tục hợp đồng không")
+        if self.dl_confirm == 'yes':
+            self.dl_can_submit = False
+            self.dl_can_assign = False
+            self.state = 'approve'
 
-        self.dl_can_submit = False
-        self.dl_can_assign = False
-        self.state = 'approve'
+            template_id = self.env.ref("mail_template_dl_app").id
+            print(template_id)
+            template = self.env['mail.template'].browse(template_id)
+            template.send_mail(self.id, force_send=True)
+        if self.dl_confirm == 'no':
+            self.dl_can_submit = False
+            self.dl_can_assign = False
+            self.state = 'approve'
+
+            template_id = self.env.ref("mail_template_dl_rej").id
+            print(template_id)
+            template = self.env['mail.template'].browse(template_id)
+            template.send_mail(self.id, force_send=True)
+
 
     def cancel_user_confirm(self):
         self.state = 'draft'
@@ -247,6 +273,13 @@ class HrEvaluate(models.Model):
         self.dl_can_submit = False
         self.dl_can_assign = False
         self.state = 'pm'
+
+        template_id = self.env.ref("mail_template_pm").id
+        print(template_id)
+        template = self.env['mail.template'].browse(template_id)
+        template.send_mail(self.id, force_send=True)
+
+
 
     def action_dl_to_pm(self):
         form_view = self.env.ref('hr_evaluate.dl_assign_view_form')
