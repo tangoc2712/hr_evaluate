@@ -113,68 +113,6 @@ class HrEvaluate(models.Model):
             self.end_date = contract[0].date_end
             self.contract_id = contract[0].name
 
-    total_self = fields.Float(compute='_get_compute_point')
-    total_dl = fields.Float(compute='_get_compute_point')
-
-    def _set_self_tick_conclusion(self, x):
-        for re in self:
-            re.form3_evaluate_ids[x].self_rank = True
-            for i in range(5):
-                if i != x:
-                    re.form3_evaluate_ids[i].self_rank = False
-
-    def _set_dl_tick_conclusion(self, x):
-        for re in self:
-            re.form3_evaluate_ids[x].manager_rank = True
-            for i in range(5):
-                if i != x:
-                    re.form3_evaluate_ids[i].manager_rank = False
-
-    @api.onchange('total_self')
-    def _onchange_rank_self_field(self):
-        for re in self:
-            if re.total_self < 50:
-                re._set_self_tick_conclusion(4)
-            if re.total_self >= 50 and re.total_self < 75:
-                re._set_self_tick_conclusion(3)
-            if re.total_self >= 75 and re.total_self < 90:
-                re._set_self_tick_conclusion(2)
-            if re.total_self >= 90 and re.total_self < 99:
-                re._set_self_tick_conclusion(1)
-            if re.total_self >= 100:
-                re._set_self_tick_conclusion(0)
-
-    @api.onchange('total_dl')
-    def _onchange_rank_field(self):
-        for re in self:
-            if re.total_dl < 50:
-                re._set_dl_tick_conclusion(4)
-            if re.total_dl >= 50 and re.total_dl < 75:
-                re._set_dl_tick_conclusion(3)
-            if re.total_dl >= 75 and re.total_dl < 90:
-                re._set_dl_tick_conclusion(2)
-            if re.total_dl >= 90 and re.total_dl < 99:
-                re._set_dl_tick_conclusion(1)
-            if re.total_dl >= 100:
-                re._set_dl_tick_conclusion(0)
-
-    @api.depends('form2_evaluate_ids.self_evaluate', 'form2_evaluate_ids.weight_num', 'form2_evaluate_ids.dl_evaluate')
-    def _get_compute_point(self):
-        total_selft = 0
-        total_dl = 0
-        print("testing.............1")
-        for record in self:
-            for line in record.form2_evaluate_ids:
-                total_selft += (line.self_evaluate * line.weight_num) / 100
-                total_dl += (line.dl_evaluate * line.weight_num) / 100
-
-            record.total_self = total_selft
-            record.total_dl = total_dl
-            record.form2_evaluate_ids[-1].self_evaluate = total_selft  # sum in last line of table
-            record.form2_evaluate_ids[-1].dl_evaluate = total_dl
-            print(record.form2_evaluate_ids[-1].dl_evaluate, record.total_dl)
-            print(record.form2_evaluate_ids[-1].self_evaluate, record.total_self)
-
     @api.model
     def default_get(self, fields):
         res = super(HrEvaluate, self).default_get(fields)
@@ -184,9 +122,10 @@ class HrEvaluate(models.Model):
         disciplines = []
         ranks = []
         for config_id in evaluate_config_id_ids:
+
             if config_id.type == 'conclusion':
                 ranks.append((0, 0, {'evaluate_config_id': config_id.id,
-                                     'rank': config_id.rank_str,
+                                     'rank': config_id.rank_str
                                      }))
             elif config_id.type == 'discipline':
                 disciplines.append((0, 0, {'evaluate_config_id': config_id.id,
@@ -195,9 +134,10 @@ class HrEvaluate(models.Model):
                                            'self_evaluate': 0,
                                            'dl_evaluate': 0}))
             elif config_id.type == 'sum':
-
                 disciplines.append((0, 0, {'evaluate_config_id': config_id.id,
+                                           # 'self_evaluate': sum(disciplines.self_evaluate),
                                            }))
+
         res.update({'form2_evaluate_ids': disciplines,
                     'form3_evaluate_ids': ranks})
         return res
@@ -210,18 +150,25 @@ class HrEvaluate(models.Model):
             raise UserError("Hãy điền vào phần Ý kiến, kiến nghị")
         if not self.employee_confirm:
             raise UserError("Nhân viên hãy chọn có tiếp tục hợp đồng không")
-        if self.employee_confirm == 'no' :
-            template_id = self.env.ref("hr_evaluate.mail_template_emp_rej").id
-            print(template_id)
-            template = self.env['mail.template'].browse(template_id)
-            template.send_mail(self.id, force_send=True)
 
-        if  self.employee_confirm == 'yes':
+        if self.employee_confirm == 'yes':
             self.dl_can_assign = True
             self.dl_can_submit = True
             self.employee_can_submit = False
             self.state = 'dl'
+
             template_id = self.env.ref("hr_evaluate.mail_template_emp_acc").id
+            print(template_id)
+            template = self.env['mail.template'].browse(template_id)
+            template.send_mail(self.id, force_send=True)
+
+        if self.employee_confirm == 'no':
+            self.dl_can_assign = True
+            self.dl_can_submit = True
+            self.employee_can_submit = False
+            self.state = 'dl'
+
+            template_id = self.env.ref("hr_evaluate.mail_template_emp_rej").id
             print(template_id)
             template = self.env['mail.template'].browse(template_id)
             template.send_mail(self.id, force_send=True)
@@ -235,7 +182,7 @@ class HrEvaluate(models.Model):
         self.dl_can_submit = True
         self.state = 'dl'
 
-        template_id = self.env.ref("mail_template_dl_to_confirm").id
+        template_id = self.env.ref("hr_evaluate.mail_template_dl_to_confirm").id
         print(template_id)
         template = self.env['mail.template'].browse(template_id)
         template.send_mail(self.id, force_send=True)
@@ -249,7 +196,7 @@ class HrEvaluate(models.Model):
             self.dl_can_assign = False
             self.state = 'approve'
 
-            template_id = self.env.ref("mail_template_dl_app").id
+            template_id = self.env.ref("hr_evaluate.mail_template_dl_app").id
             print(template_id)
             template = self.env['mail.template'].browse(template_id)
             template.send_mail(self.id, force_send=True)
@@ -258,7 +205,7 @@ class HrEvaluate(models.Model):
             self.dl_can_assign = False
             self.state = 'approve'
 
-            template_id = self.env.ref("mail_template_dl_rej").id
+            template_id = self.env.ref("hr_evaluate.mail_template_dl_rej").id
             print(template_id)
             template = self.env['mail.template'].browse(template_id)
             template.send_mail(self.id, force_send=True)
@@ -274,10 +221,11 @@ class HrEvaluate(models.Model):
         self.dl_can_assign = False
         self.state = 'pm'
 
-        template_id = self.env.ref("mail_template_pm").id
+        template_id = self.env.ref("hr_evaluate.mail_template_pm").id
         print(template_id)
         template = self.env['mail.template'].browse(template_id)
         template.send_mail(self.id, force_send=True)
+
 
 
 
@@ -293,3 +241,5 @@ class HrEvaluate(models.Model):
             'res_id': self.id,
             'target': 'new'
         }
+
+
