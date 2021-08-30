@@ -14,11 +14,18 @@ class HrEvaluateForm(models.Model):
          ('good', 'Tốt'),
          ('kha', 'Khá'),
          ('mid', 'Trung Bình'),
-         ('fail', 'Chưa Đạt')], required=True)
+         ('fail', 'Chưa Đạt')], required=True, string="Chất lượng")
     des = fields.Char(string='Ghi chú')
-    manager_eval = fields.Integer(string='Quản lý đánh giá ')
+    manager_eval = fields.Text(string='Quản lý đánh giá ')
 
-    manager_edit = fields.Boolean(string="DL can edit", default=False, readonly=True)
+    manager_edit = fields.Boolean(string="DL can edit", compute="_change_state", readonly=True)
+
+    @api.onchange('job_des', 'employee_id.state')
+    def _change_state(self):
+        for re in self:
+            print(re.manager_edit)
+            if re.employee_id.state != 'draft':
+                re.manager_edit = True
 
 
 class HrEvaluateForm2(models.Model):
@@ -28,12 +35,24 @@ class HrEvaluateForm2(models.Model):
     evaluate_config_id = fields.Many2one('hr.evaluate.config', string="Config ID")
     employee_id2 = fields.Many2one('hr.evaluate', string="Form Id 2")
     criteria = fields.Char(string='Tiêu chí đánh giá')
-    weight_num = fields.Float(string='Trọng số (%)')
-    self_evaluate = fields.Float(string='Cá nhân đánh giá')
-    self_evaluate_edit = fields.Boolean(string="Employee can edit")
-    dl_evaluate = fields.Float(string='Quản lý đánh giá', digits=0)
-    dl_evaluate_edit = fields.Boolean(string="PM/DL can edit")
+    weight_num = fields.Integer(string='Trọng số (%)')
+    self_evaluate = fields.Integer(string='Cá nhân đánh giá')
+    self_evaluate_edit = fields.Boolean(string="Employee can edit", compute="_change_state", default=True)
+    dl_evaluate = fields.Integer(string='Quản lý đánh giá', digits=0)
+    dl_evaluate_edit = fields.Boolean(string="PM/DL can edit", compute="_change_state", default=True)
     des = fields.Char(string="Ghi chú")
+
+    @api.onchange('criteria', 'employee_id2.state')
+    def _change_state(self):
+        for re in self:
+            print(re.self_evaluate_edit)
+            if re.employee_id2.state == 'draft':
+                re.self_evaluate_edit = True
+                re.dl_evaluate_edit = False
+            else:
+                re.self_evaluate_edit = False
+                re.dl_evaluate_edit = True
+
 
 
 class HrEvaluateForm3(models.Model):

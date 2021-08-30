@@ -92,11 +92,10 @@
                                 <field name="comp_level"/>
                                 <field name="quantity"/>
                                 <field name="des"/>
-                                <field name="manager_eval" attrs="{'readonly': [('manager_edit','=',False)]}"/>
+                                <field name="manager_eval" force_save="1" attrs="{'readonly': [('manager_edit','=',False)]}"/>
                             </tree>
                             <form>
                                 <group>
-                                    <field name="manager_edit"/>
                                     <field name="job_des"/>
                                     <field name="par_level"/>
                                     <field name="comp_level"/>
@@ -117,12 +116,9 @@
                                 <field name="dl_evaluate_edit" invisible="1"/>
                                 <field name="criteria" force_save="1" readonly="1"/>
                                 <field name="weight_num" force_save="1" readonly="1"/>
-                                <field name="self_evaluate"
-                                       attrs="{'readonly': [('self_evaluate_edit','!=',False)]}"/>
-                                <field name="dl_evaluate"
-                                       attrs="{'readonly': [('dl_evaluate_edit','!=',False)]}"/>
+                                <field name="self_evaluate" attrs="{'readonly': [('self_evaluate_edit','=',False)]}"/>
+                                <field name="dl_evaluate" attrs="{'readonly': [('dl_evaluate_edit','=',False)]}"/>
                                 <field name="des"/>
-
                             </tree>
                             <form>
                                 <group>
@@ -134,8 +130,8 @@
                                 </group>
                             </form>
                         </field>
-                        <field name="total_self" invisible="1"/>
-                        <field name="total_dl" invisible="1"/>
+                        <field name="total_self" nolabel="1" force_save="1" invisible="1"/>
+                        <field name="total_dl" nolabel="1" force_save="1" invisible="1"/>
                         <group>
                             <i>Lưu ý: Điểm 100 là điểm dành cho nhân viên hoàn thành tốt công việc. Điểm 110 là điểm max
                                 dành cho nhân viên có thành tích xuất sắc
