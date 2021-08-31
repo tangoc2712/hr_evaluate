@@ -21,19 +21,12 @@ class HrEvaluate(models.Model):
     company_id = fields.Many2one('res.company', required=True)
     petition = fields.Text()
     remark = fields.Text()
-    pm_assign = fields.Many2one('hr.employee', string='PM assigned', store=True, tracking=True)
+    pm_assign = fields.Many2one('hr.employee', string='PM đánh giá', store=True, tracking=True)
     dl_assign = fields.Many2one('hr.employee', compute="_compute_employee_evaluate", store=True, readonly=True)
     dl_assign_job_id = fields.Many2one('hr.job', compute='_compute_dl_evaluate', store=True, readonly=True,
                                        string='Chức vụ')
     notes = fields.Text(string="Message", tracking=True)
     mess = fields.Text(compute='_update_note')
-
-    @api.depends('dl_assign', 'pm_assign')
-    def _update_note(self):
-        for re in self:
-            re.mess = "Status: DL " + str(re.dl_assign.name) + " assigned to PM " + str(
-                re.pm_assign.name) + "\n" + "Note: " + str(re.notes)
-            print(re.mess)
 
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
@@ -64,11 +57,14 @@ class HrEvaluate(models.Model):
     form2_evaluate_ids = fields.One2many('hr.evaluate.form2', 'employee_id2', string='Discipline Evaluate')
     form3_evaluate_ids = fields.One2many('hr.evaluate.form3', 'employee_id3', string='Conclusion Evaluate')
 
-    @api.model
-    def change_state(self):
-        manage_edit = self.env['hr.evaluate.form'].sudo().search([])
-        if self.state == 'draft' or self.state == 'approve':
-            manage_edit.manager_edit = True
+
+
+    @api.depends('dl_assign', 'pm_assign')
+    def _update_note(self):
+        for re in self:
+            re.mess = "Status: DL " + str(re.dl_assign.name) + " assigned to PM " + str(
+                re.pm_assign.name) + "\n" + "Note: " + str(re.notes)
+            print(re.mess)
 
     @api.model
     def auto_generate_evaluate(self):
@@ -78,7 +74,6 @@ class HrEvaluate(models.Model):
         for re in contract:
             date_end = fields.Datetime.to_datetime(re.date_end)
             if (date_end is not None) and (int((date_end - today).days) < 15) and (int((date_end - today).days) > 0):
-                print(re.employee_id.id)
                 vals = {
                     'employee_id': re.employee_id.id,
                     'company_id': re.employee_id.company_id.id,
@@ -97,7 +92,6 @@ class HrEvaluate(models.Model):
             evaluate.job_id = evaluate.employee_id.job_id
             evaluate.department_id = evaluate.employee_id.department_id
             evaluate.dl_assign = evaluate.employee_id.parent_id
-            # evaluate.contract_id = evaluate.employee_id.name
 
     @api.depends('dl_assign')
     def _compute_dl_evaluate(self):
@@ -113,10 +107,75 @@ class HrEvaluate(models.Model):
             self.end_date = contract[0].date_end
             self.contract_id = contract[0].name
 
+
+    total_self = fields.Float(compute='_get_compute_point')
+    total_dl = fields.Float(compute='_get_compute_point')
+
+    def _set_self_tick_conclusion(self, x):
+        for re in self:
+            re.form3_evaluate_ids[x].self_rank = True
+            for i in range(5):
+                if i != x:
+                    re.form3_evaluate_ids[i].self_rank = False
+
+    def _set_dl_tick_conclusion(self, x):
+        for re in self:
+            re.form3_evaluate_ids[x].manager_rank = True
+            for i in range(5):
+                if i != x:
+                    re.form3_evaluate_ids[i].manager_rank = False
+
+    @api.onchange('total_self')
+    def _onchange_rank_self_field(self):
+        for re in self:
+            if re.total_self < 50:
+                re._set_self_tick_conclusion(4)
+            if re.total_self >= 50 and re.total_self < 75:
+                re._set_self_tick_conclusion(3)
+            if re.total_self >= 75 and re.total_self < 90:
+                re._set_self_tick_conclusion(2)
+            if re.total_self >= 90 and re.total_self < 99:
+                re._set_self_tick_conclusion(1)
+            if re.total_self >= 100:
+                re._set_self_tick_conclusion(0)
+
+    @api.onchange('total_dl')
+    def _onchange_rank_field(self):
+        for re in self:
+            if re.total_dl < 50:
+                re._set_dl_tick_conclusion(4)
+            if re.total_dl >= 50 and re.total_dl < 75:
+                re._set_dl_tick_conclusion(3)
+            if re.total_dl >= 75 and re.total_dl < 90:
+                re._set_dl_tick_conclusion(2)
+            if re.total_dl >= 90 and re.total_dl < 99:
+                re._set_dl_tick_conclusion(1)
+            if re.total_dl >= 100:
+                re._set_dl_tick_conclusion(0)
+
+    @api.onchange('total_self', 'total_dl')
+    def _onchange_point(self):
+        for record in self:
+            record.form2_evaluate_ids[-1].self_evaluate = record.total_self
+            record.form2_evaluate_ids[-1].dl_evaluate = record.total_dl
+
+    @api.depends('form2_evaluate_ids.self_evaluate', 'form2_evaluate_ids.weight_num', 'form2_evaluate_ids.dl_evaluate')
+    def _get_compute_point(self):
+        total_self = 0
+        total_dl = 0
+        for record in self:
+            for line in record.form2_evaluate_ids:
+                total_self += (line.self_evaluate * line.weight_num) / 100
+                total_dl += (line.dl_evaluate * line.weight_num) / 100
+
+            record.total_self = total_self
+            record.total_dl = total_dl
+
+
     @api.model
     def default_get(self, fields):
         res = super(HrEvaluate, self).default_get(fields)
-        print("testing.............")
+        print("Filling discipline, conclusion form.............")
         # evaluate_config_id_ids = self.get_discipline_evaluate()
         evaluate_config_id_ids = self.env['hr.evaluate.config'].search([])
         disciplines = []
@@ -143,13 +202,13 @@ class HrEvaluate(models.Model):
         return res
 
     def action_employee_submit(self):
-
         if not self.form_evaluate_ids:
             raise UserError("Chọn ít nhất một nội dung công việc")
         if not self.petition:
             raise UserError("Hãy điền vào phần Ý kiến, kiến nghị")
         if not self.employee_confirm:
             raise UserError("Nhân viên hãy chọn có tiếp tục hợp đồng không")
+
 
         if self.employee_confirm == 'yes':
             self.dl_can_assign = True
@@ -158,9 +217,11 @@ class HrEvaluate(models.Model):
             self.state = 'dl'
 
             template_id = self.env.ref("hr_evaluate.mail_template_emp_acc").id
+
             print(template_id)
             template = self.env['mail.template'].browse(template_id)
             template.send_mail(self.id, force_send=True)
+
 
         if self.employee_confirm == 'no':
             self.dl_can_assign = True
@@ -169,6 +230,7 @@ class HrEvaluate(models.Model):
             self.state = 'dl'
 
             template_id = self.env.ref("hr_evaluate.mail_template_emp_rej").id
+
             print(template_id)
             template = self.env['mail.template'].browse(template_id)
             template.send_mail(self.id, force_send=True)
@@ -186,6 +248,7 @@ class HrEvaluate(models.Model):
         print(template_id)
         template = self.env['mail.template'].browse(template_id)
         template.send_mail(self.id, force_send=True)
+
 
     def action_dl_submit(self):
         # validate & raise message error
@@ -211,11 +274,11 @@ class HrEvaluate(models.Model):
             template.send_mail(self.id, force_send=True)
 
 
+
     def cancel_user_confirm(self):
         self.state = 'draft'
 
     def action_dl_assign(self):
-        # self.form_evaluate_ids.manager_edit = True
         self.pm_can_submit = True
         self.dl_can_submit = False
         self.dl_can_assign = False
