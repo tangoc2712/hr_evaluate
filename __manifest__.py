@@ -23,6 +23,7 @@ You can assign several Evaluate per employee.
         'views/hr_evaluate_views.xml',
         'views/hr_evaluate_form_views.xml',
         'views/hr_evaluate_config_view.xml',
+        'reports/report.xml',
     ],
     'demo': [],
     'installable': True,

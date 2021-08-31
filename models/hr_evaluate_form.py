@@ -1,5 +1,6 @@
 from odoo import models, api, fields
 from odoo.exceptions import UserError
+from odoo.exceptions import ValidationError
 
 
 class HrEvaluateForm(models.Model):
@@ -27,6 +28,12 @@ class HrEvaluateForm(models.Model):
             if re.employee_id.state != 'draft':
                 re.manager_edit = True
 
+    @api.onchange('comp_level')
+    def _validate_number(self):
+        for re in self:
+            if re.comp_level > 100:
+                raise UserError("Cần nhập số phần trăm nhỏ hơn 100")
+
 
 class HrEvaluateForm2(models.Model):
     _name = "hr.evaluate.form2"
@@ -53,6 +60,14 @@ class HrEvaluateForm2(models.Model):
                 re.self_evaluate_edit = False
                 re.dl_evaluate_edit = True
 
+    @api.onchange('self_evaluate', 'dl_evaluate.state')
+    def _validate_number(self):
+        for re in self:
+            if re.self_evaluate > 110:
+                print("ok")
+                raise UserError("Số điểm tối đa là 110")
+            if re.dl_evaluate > 110:
+                raise UserError("Số điểm tối đa là 110")
 
 
 class HrEvaluateForm3(models.Model):

@@ -31,8 +31,8 @@
             <field name="name">hr.evaluate.form</field>
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
-                <!--                create="false" duplicate="false" delete="false"-->
-                <form string="Evaluate">
+                <form string="Evaluate" >
+<!--                    create="false" duplicate="false" delete="false"-->
                     <field name="employee_can_submit" invisible="1"/>
                     <field name="pm_can_submit" invisible="1"/>
                     <field name="dl_can_submit" invisible="1"/>
@@ -40,18 +40,19 @@
                     <field name="can_retain" invisible="1"/>
                     <header>
                         <field name="state" widget="statusbar" statusbar_visible="draft,pm,dl,approve"/>
-                        <button name="action_employee_submit" groups="hr.group_hr_user"
+                        <button name="action_employee_submit" groups="hr.group_hr_user" confirm="Bạn đã chắc chắn chưa?"
                                 attrs="{'invisible': [('employee_can_submit','=', False)]}" string="Submit"
                                 type="object" class="oe_highlight"/>
-                        <button name="action_pm_submit" groups="hr_evaluate.group_hr_pm"
+                        <button name="action_pm_submit" groups="hr_evaluate.group_hr_pm" confirm="Bạn đã chắc chắn chưa?"
                                 attrs="{'invisible': [('pm_can_submit', '=', False)]}"
-                                string="Submit" type="object" class="oe_highlight"/>
-                        <button name="action_dl_submit" groups="hr_evaluate.group_hr_dl"
+                                string="Approve" type="object" class="oe_highlight"/>
+                        <button name="action_dl_alert" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_submit', '=', False)]}"
                                 string="Approve" type="object" class="oe_highlight"/>
                         <button name="action_dl_to_pm" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_assign', '=', False)]}" string="Assign To PM/Team Lead"
                                 type="object" class="oe_highlight"/>
+                        <button name="print_report" type="object" string="Print" class="oe_highlight"/>
                     </header>
                     <sheet style="max-width: calc(100% - 32px); overflow-x: auto;">
                         <div style="width:100%">
@@ -92,7 +93,8 @@
                                 <field name="comp_level"/>
                                 <field name="quantity"/>
                                 <field name="des"/>
-                                <field name="manager_eval" force_save="1" attrs="{'readonly': [('manager_edit','=',False)]}"/>
+                                <field name="manager_eval" force_save="1"
+                                       attrs="{'readonly': [('manager_edit','=',False)]}"/>
                             </tree>
                             <form>
                                 <group>
@@ -209,7 +211,24 @@
                         <field name="notes" required="1" modifiers="{'required':true}"/>
                     </group>
                     <footer>
-                        <button name="action_dl_assign" string="Confirm" type="object" class="oe_highlight"/>
+                        <button name="action_dl_assign" confirm="Bạn đã chắc chắn chưa?" string="Confirm" type="object" class="oe_highlight"/>
+                        <button string="Cancel" special="cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="alert_view_form" model="ir.ui.view">
+            <field name="name">alert.form</field>
+            <field name="model">hr.evaluate</field>
+            <field name="active">false</field>
+            <field name="arch" type="xml">
+                <form string="Thông báo" create="false" delete="false">
+                    <group modifiers="{}">
+                        <field name="alert" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_dl_submit" confirm="Bạn đã chắc chắn chưa?" string="Approve" type="object" class="oe_highlight"/>
                         <button string="Cancel" special="cancel" class="oe_link"/>
                     </footer>
                 </form>

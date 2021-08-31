@@ -27,6 +27,7 @@ class HrEvaluate(models.Model):
                                        string='Chức vụ')
     notes = fields.Text(string="Message", tracking=True)
     mess = fields.Text(compute='_update_note')
+    alert = fields.Text(compute="_compute_alert", default="Thong bao")
 
     state = fields.Selection(selection=[
         ('draft', 'Draft'),
@@ -56,6 +57,11 @@ class HrEvaluate(models.Model):
     form_evaluate_ids = fields.One2many('hr.evaluate.form', 'employee_id', string='Performance Evaluate', required=True)
     form2_evaluate_ids = fields.One2many('hr.evaluate.form2', 'employee_id2', string='Discipline Evaluate')
     form3_evaluate_ids = fields.One2many('hr.evaluate.form3', 'employee_id3', string='Conclusion Evaluate')
+
+    @api.depends('employee_id')
+    def _compute_display_name(self):
+        for re in self:
+            re.display_name = re.employee_id.name
 
     @api.depends('dl_assign', 'pm_assign')
     def _update_note(self):
@@ -197,6 +203,10 @@ class HrEvaluate(models.Model):
                     'form3_evaluate_ids': ranks})
         return res
 
+    @api.model
+    def print_report(self):
+        pass
+
     def action_employee_submit(self):
         if not self.form_evaluate_ids:
             raise UserError("Chọn ít nhất một nội dung công việc")
@@ -244,9 +254,6 @@ class HrEvaluate(models.Model):
         template.send_mail(self.id, force_send=True)
 
     def action_dl_submit(self):
-        # validate & raise message error
-        if not self.dl_confirm:
-            raise UserError("DL hãy chọn có tiếp tục hợp đồng không")
         if self.dl_confirm == 'yes':
             self.dl_can_submit = False
             self.dl_can_assign = False
@@ -287,6 +294,41 @@ class HrEvaluate(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'view_id': form_view.id,
+            'res_model': 'hr.evaluate',
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new'
+        }
+
+    @api.depends('dl_confirm', 'employee_confirm')
+    def _compute_alert(self):
+        for re in self:
+            if re.employee_confirm == 'yes':
+                if re.dl_confirm == 'yes':
+                    re.alert = 'Thông báo đánh giá thử việc thành công \n' + 'Nhấn Approve để tiếp tục'
+                if re.dl_confirm == 'no':
+                    if re.total_dl > 50:
+                        re.alert = 'Kết quả đánh giá của nhân viên là A, B, C. Kết luận chấm dứt hợp đồng không phù hợp với kết quả anh/chị đánh giá.\n' + 'Vui lòng liên hệ lại với nhân viên'
+                    else:
+                        re.alert = 'Nhân viên đã không đạt yêu cầu, hủy hợp đồng thành công.'
+            elif re.employee_confirm == 'no':
+                if re.dl_confirm == 'yes':
+                    re.alert = 'Anh/ chị đã thông báo thông tin đến nhân viên chưa?, nếu rồi nhấn Approve để tiếp tục.'
+                if re.dl_confirm == 'no':
+                    re.alert = 'Thông báo hủy hợp đồng'
+
+
+
+    def action_dl_alert(self):
+        # validate & raise message error
+        if not self.dl_confirm:
+            raise UserError("DL hãy chọn có tiếp tục hợp đồng không")
+        alert_view = self.env.ref('hr_evaluate.alert_view_form')
+        return {
+            'name': 'Thông báo',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'view_id': alert_view.id,
             'res_model': 'hr.evaluate',
             'type': 'ir.actions.act_window',
             'res_id': self.id,
