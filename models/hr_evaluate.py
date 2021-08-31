@@ -57,11 +57,6 @@ class HrEvaluate(models.Model):
     form2_evaluate_ids = fields.One2many('hr.evaluate.form2', 'employee_id2', string='Discipline Evaluate')
     form3_evaluate_ids = fields.One2many('hr.evaluate.form3', 'employee_id3', string='Conclusion Evaluate')
 
-    # @api.onchange('employee_can_submit')
-    # def _onchange_state(self):
-    #     # access right for dl_field
-    #     if self.employee_can_submit is False:
-
     @api.depends('dl_assign', 'pm_assign')
     def _update_note(self):
         for re in self:
