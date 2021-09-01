@@ -137,7 +137,7 @@ class HrEvaluate(models.Model):
                 re._set_self_tick_conclusion(3)
             if re.total_self >= 75 and re.total_self < 90:
                 re._set_self_tick_conclusion(2)
-            if re.total_self >= 90 and re.total_self < 99:
+            if re.total_self >= 90 and re.total_self <= 99:
                 re._set_self_tick_conclusion(1)
             if re.total_self >= 100:
                 re._set_self_tick_conclusion(0)
@@ -151,7 +151,7 @@ class HrEvaluate(models.Model):
                 re._set_dl_tick_conclusion(3)
             if re.total_dl >= 75 and re.total_dl < 90:
                 re._set_dl_tick_conclusion(2)
-            if re.total_dl >= 90 and re.total_dl < 99:
+            if re.total_dl >= 90 and re.total_dl <= 99:
                 re._set_dl_tick_conclusion(1)
             if re.total_dl >= 100:
                 re._set_dl_tick_conclusion(0)
@@ -202,10 +202,6 @@ class HrEvaluate(models.Model):
         res.update({'form2_evaluate_ids': disciplines,
                     'form3_evaluate_ids': ranks})
         return res
-
-    @api.model
-    def print_report(self):
-        pass
 
     def action_employee_submit(self):
         if not self.form_evaluate_ids:
@@ -305,7 +301,7 @@ class HrEvaluate(models.Model):
         for re in self:
             if re.employee_confirm == 'yes':
                 if re.dl_confirm == 'yes':
-                    re.alert = 'Thông báo đánh giá thử việc thành công \n' + 'Nhấn Approve để tiếp tục'
+                    re.alert = 'Thông báo đánh giá thử việc thành công.\n' + 'Nhấn Approve để tiếp tục.'
                 if re.dl_confirm == 'no':
                     if re.total_dl > 50:
                         re.alert = 'Kết quả đánh giá của nhân viên là A, B, C. Kết luận chấm dứt hợp đồng không phù hợp với kết quả anh/chị đánh giá.\n' + 'Vui lòng liên hệ lại với nhân viên'
@@ -313,14 +309,14 @@ class HrEvaluate(models.Model):
                         re.alert = 'Nhân viên đã không đạt yêu cầu, hủy hợp đồng thành công.'
             elif re.employee_confirm == 'no':
                 if re.dl_confirm == 'yes':
-                    re.alert = 'Anh/ chị đã thông báo thông tin đến nhân viên chưa?, nếu rồi nhấn Approve để tiếp tục.'
+                    re.alert = 'Anh/ chị cần báo thông tin này đến nhân viên. \n' + 'Nếu đã báo kết quả này đến nhân viên, vui lòng chọn Approve để tiếp tục.'
                 if re.dl_confirm == 'no':
-                    re.alert = 'Thông báo hủy hợp đồng'
-
-
+                    re.alert = 'Thông báo hủy hợp đồng. '
 
     def action_dl_alert(self):
         # validate & raise message error
+        if not self.remark:
+            raise UserError("Hãy điền vào phần Ý kiến nhận xét")
         if not self.dl_confirm:
             raise UserError("DL hãy chọn có tiếp tục hợp đồng không")
         alert_view = self.env.ref('hr_evaluate.alert_view_form')

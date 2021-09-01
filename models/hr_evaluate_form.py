@@ -51,6 +51,7 @@ class HrEvaluateForm2(models.Model):
 
     @api.onchange('criteria', 'employee_id2.state')
     def _change_state(self):
+
         for re in self:
             print(re.self_evaluate_edit)
             if re.employee_id2.state == 'draft':
@@ -60,7 +61,7 @@ class HrEvaluateForm2(models.Model):
                 re.self_evaluate_edit = False
                 re.dl_evaluate_edit = True
 
-    @api.onchange('self_evaluate', 'dl_evaluate.state')
+    @api.onchange('self_evaluate', 'dl_evaluate')
     def _validate_number(self):
         for re in self:
             if re.self_evaluate > 110:

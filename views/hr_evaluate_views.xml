@@ -31,8 +31,7 @@
             <field name="name">hr.evaluate.form</field>
             <field name="model">hr.evaluate</field>
             <field name="arch" type="xml">
-                <form string="Evaluate" >
-<!--                    create="false" duplicate="false" delete="false"-->
+                <form string="Evaluate" create="false" duplicate="false" delete="false">
                     <field name="employee_can_submit" invisible="1"/>
                     <field name="pm_can_submit" invisible="1"/>
                     <field name="dl_can_submit" invisible="1"/>
@@ -52,7 +51,6 @@
                         <button name="action_dl_to_pm" groups="hr_evaluate.group_hr_dl"
                                 attrs="{'invisible': [('dl_can_assign', '=', False)]}" string="Assign To PM/Team Lead"
                                 type="object" class="oe_highlight"/>
-                        <button name="print_report" type="object" string="Print" class="oe_highlight"/>
                     </header>
                     <sheet style="max-width: calc(100% - 32px); overflow-x: auto;">
                         <div style="width:100%">
@@ -67,7 +65,7 @@
                             <group>
                                 <field name="employee_id"
                                        options="{'no_create' : True, 'no_open': True, 'no_create_edit':True}"
-                                       readonly="0"/>
+                                       readonly="1"/>
                                 <field name="job_id"/>
                                 <field name="department_id"/>
                                 <field name="start_date" force_save="1"/>
@@ -140,27 +138,22 @@
                             </i>
                         </group>
 
-
-                        <h4>
-                            <b>
-                                <label for="petition" string="A. Ý KIẾN, KIẾN NGHỊ, ĐỀ XUẤT CỦA NGƯỜI ĐƯỢC ĐÁNH GIÁ"/>
-                            </b>
-                        </h4>
+                        <group>
+                            <div style="font-weight: bold;">A. Ý KIẾN, KIẾN NGHỊ, ĐỀ XUẤT CỦA NGƯỜI ĐƯỢC ĐÁNH GIÁ</div>
+                        </group>
                         <field name="petition" nolabel="1" force_save="1"
                                attrs="{'readonly': [('employee_can_submit','=',False)]}"/>
-                        <br/>
-                        <h4>
-                            <b>
-                                <label for="remark" string="B. Ý KIẾN NHẬN XÉT CỦA QUẢN LÝ TRỰC TIẾP"/>
-                            </b>
-                        </h4>
+
+
+                        <group>
+                            <div style="font-weight: bold;">B. Ý KIẾN NHẬN XÉT CỦA QUẢN LÝ TRỰC TIẾP</div>
+                        </group>
                         <field name="remark" nolabel="1" force_save="1"
                                attrs="{'readonly': [('can_retain', '=', False), ('pm_can_submit','=',False), ('dl_can_submit', '=', False)]}"/>
-                        <h4>
-                            <b>
-                                <label for="remark" string="C. KẾT LUẬN CHUNG"/>
-                            </b>
-                        </h4>
+
+                        <group>
+                            <div style="font-weight: bold;">C. KẾT LUẬN CHUNG</div>
+                        </group>
                         <field name="form3_evaluate_ids" force_save="1">
                             <tree create="false" editable="bottom" delete="0">
                                 <field name="rank" force_save="1" readonly="1"/>
@@ -185,8 +178,6 @@
                             <field name="dl_reason"
                                    attrs="{'required': [('dl_confirm', '=', 'no')], 'invisible': ['|',('state', '=', 'draft'),('dl_confirm', '!=', 'no')], 'readonly': ['|','|',('state', '!=', 'dl'),('dl_confirm', '!=', 'no'), ('dl_can_submit', '=', False)]}"
                                    force_save="1"/>
-                            <field name="hrm_reason" style="color:red;"
-                                   attrs="{'invisible': [('state', '!=', 'approve'), ('hrm_reason', '=', False)]}"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">

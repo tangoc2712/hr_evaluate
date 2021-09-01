@@ -1,6 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_evaluate_user,access.hr.evaluate_user,model_hr_evaluate,base.group_user,1,1,0,0
-access_hr_evaluate_sys,access.hr.evaluate_sys,model_hr_evaluate,base.group_system,1,1,1,1
+access_hr_evaluate_sys,access.hr.evaluate_sys,model_hr_evaluate,base.group_system,1,1,0,1
 access_hr_evaluate_hrm,access.hr.evaluate_hrm,model_hr_evaluate,hr.group_hr_manager,1,1,0,1
 
 
